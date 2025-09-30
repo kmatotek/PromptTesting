@@ -1,0 +1,2085 @@
+[
+  {
+    "timestamp": "2025-09-28T20:45:49.623109",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Natural language",
+    "scaffold": "Direct",
+    "verbosity": "Minimal",
+    "output": "Code only",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins: List[int], amount: int) -> int:\n    # Initialize a list to store the minimum number of coins for each amount\n    dp = [float('inf')] * (amount + 1)\n    \n    # Base case: if amount is 0, no coins are needed, so return 0\n    dp[0] = 0\n    \n    # Iterate through each coin denomination\n    for coin in coins:\n        # If the current coin value exceeds the remaining amount, skip it\n        if coin > amount:\n            continue\n        \n        # Update the minimum number of coins by adding the cost of the coin to the previous result\n        dp[coin] = min(dp[coin], dp[amount - coin])\n    \n    return dp[-1]",
+    "code": "def coin_change(coins: List[int], amount: int) -> int:\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for coin in coins:\n        if coin > amount:\n            continue\n        dp[coin] = min(dp[coin], dp[amount - coin])\n    return dp[-1]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": Infinity,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": Infinity,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:45:54.443468",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Natural language",
+    "scaffold": "Direct",
+    "verbosity": "Minimal",
+    "output": "Code + explanation",
+    "passed": false,
+    "error": "1",
+    "raw_code": "def coin_change(coins, amount):\n    \"\"\"\n    Calculate the fewest number of coins needed to make up an amount.\n    \n    Args:\n    coins (list): A list of integers representing the denominations of different coins.\n    amount (int): The total amount of money to be made up with the given coins.\n    \n    Returns:\n    int: The minimum number of coins required, or -1 if it's not possible to make up the amount.\n    \n    Example:\n        >>> coin_change([1, 2, 5], 7)\n        3\n        >>> coin_change([2, 3, 4], 8)\n        2\n        >>> coin_change([1, 4, 6], 20)\n        4\n    \"\"\"\n    # Initialize a dictionary to store the minimum number of coins needed for each amount\n    dp = {0: 0}  # Base case: no coins required for 0\n\n    for coin in coins:\n        for amount in range(coin, amount + 1):\n            if amount not in dp:\n                dp[amount] = dp.get(amount - coin, dp[amount]) + 1\n            else:\n                dp[amount] = min(dp[amount], dp[amount - coin] + 1)\n\n    return dp[amount] if amount in dp else -1\n\n# Check function with provided data points\ndef check_solution():\n    assert coin_change([1, 2, 5], 7) == 3, \"Test case 1 failed\"\n    assert coin_change([2, 3, 4], 8) == 2, \"Test case 2 failed\"\n    assert coin_change([1, 4, 6], 20) == 4, \"Test case 3 failed\"\n\ncheck_solution()",
+    "code": "def coin_change(coins, amount):\n    \"\"\"\n    Calculate the fewest number of coins needed to make up an amount.\n    \n    Args:\n    coins (list): A list of integers representing the denominations of different coins.\n    amount (int): The total amount of money to be made up with the given coins.\n    \n    Returns:\n    int: The minimum number of coins required, or -1 if it's not possible to make up the amount.\n    \n    Example:\n        >>> coin_change([1, 2, 5], 7)\n        3\n        >>> coin_change([2, 3, 4], 8)\n        2\n        >>> coin_change([1, 4, 6], 20)\n        4\n    \"\"\"\n    dp = {0: 0}\n    for coin in coins:\n        for amount in range(coin, amount + 1):\n            if amount not in dp:\n                dp[amount] = dp.get(amount - coin, dp[amount]) + 1\n            else:\n                dp[amount] = min(dp[amount], dp[amount - coin] + 1)\n    return dp[amount] if amount in dp else -1",
+    "test_results": []
+  },
+  {
+    "timestamp": "2025-09-28T20:46:03.756203",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Natural language",
+    "scaffold": "Direct",
+    "verbosity": "Minimal",
+    "output": "Code + tests + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins: list[int], amount: int) -> int:\n    # Initialize a dictionary to store the minimum number of coins required for each value\n    dp = {0: 0}\n    \n    for i in range(1, amount + 1):\n        for coin in coins:\n            if i >= coin:\n                dp[i] = min(dp.get(i - coin, float('inf')), dp.get(i, 0) + 1)\n    \n    # If the result is still infinity, return -1\n    return dp[amount] if dp[amount] != float('inf') else -1\n\n# Test cases to verify the correctness of the function\ndef test_coin_change():\n    assert coin_change([2, 3, 5], 9) == 4\n    assert coin_change([1, 2, 5], 10) == 3\n    assert coin_change([1], 1) == 1\n    assert coin_change([10], 5) == 1\n    print(\"All test cases passed!\")\n\n# Running the test function\ntest_coin_change()",
+    "code": "def coin_change(coins: list[int], amount: int) -> int:\n    dp = {0: 0}\n    for i in range(1, amount + 1):\n        for coin in coins:\n            if i >= coin:\n                dp[i] = min(dp.get(i - coin, float('inf')), dp.get(i, 0) + 1)\n    return dp[amount] if dp[amount] != float('inf') else -1",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 0,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": 1,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:46:12.848537",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Natural language",
+    "scaffold": "Direct",
+    "verbosity": "Medium",
+    "output": "Code only",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins: list[int], amount: int) -> int:\n    # Create a dictionary to store the minimum number of coins needed for each amount\n    dp = {0: 0}\n    \n    for money in range(1, amount + 1):\n        min_coins_needed = float('inf')\n        \n        # Iterate through each coin in the list\n        for coin in coins:\n            if money >= coin:\n                current_coin_count = dp[money - coin] + 1\n                if current_coin_count < min_coins_needed:\n                    min_coins_needed = current_coin_count\n        \n        dp[money] = min_coins_needed\n    \n    return dp[amount]",
+    "code": "def coin_change(coins: list[int], amount: int) -> int:\n    dp = {0: 0}\n    for money in range(1, amount + 1):\n        min_coins_needed = float('inf')\n        for coin in coins:\n            if money >= coin:\n                current_coin_count = dp[money - coin] + 1\n                if current_coin_count < min_coins_needed:\n                    min_coins_needed = current_coin_count\n        dp[money] = min_coins_needed\n    return dp[amount]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 3,
+        "expected": 3,
+        "passed": true
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": Infinity,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:46:22.667056",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Natural language",
+    "scaffold": "Direct",
+    "verbosity": "Medium",
+    "output": "Code + tests + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins: List[int], amount: int) -> int:\n    \"\"\"\n    Find the fewest number of coins needed to make up the given amount.\n    \n    :param coins: A list of integers where each integer represents a coin denomination.\n    :param amount: An integer representing the total amount of money to be made up.\n    :return: The minimum number of coins required to make up the amount. If not possible, return -1.\n    \n    Example:\n    >>> coin_change([1, 2, 5], 10)\n    3\n    >>> coin_change([2, 5, 7], 11)\n    4\n    >>> coin_change([1, 2, 3, 4, 5], 6)\n    1\n    >>> coin_change([1, 2, 3, 4, 5], 9)\n    -1\n    \"\"\"\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0  # Base case: No coins needed for an amount of 0\n\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            if i - coin >= 0 and dp[i - coin] < dp[i]:\n                dp[i] = dp[i - coin] + 1\n    return dp[amount]\n\n# Test cases\ndef check_solution():\n    assert coin_change([1, 2, 5], 10) == 3\n    assert coin_change([2, 5, 7], 11) == 4\n    assert coin_change([1, 2, 3, 4, 5], 6) == 1\n    assert coin_change([1, 2, 3, 4, 5], 9) == -1\n\ncheck_solution()",
+    "code": "def coin_change(coins: List[int], amount: int) -> int:\n    \"\"\"\n    Find the fewest number of coins needed to make up the given amount.\n    \n    :param coins: A list of integers where each integer represents a coin denomination.\n    :param amount: An integer representing the total amount of money to be made up.\n    :return: The minimum number of coins required to make up the amount. If not possible, return -1.\n    \n    Example:\n    >>> coin_change([1, 2, 5], 10)\n    3\n    >>> coin_change([2, 5, 7], 11)\n    4\n    >>> coin_change([1, 2, 3, 4, 5], 6)\n    1\n    >>> coin_change([1, 2, 3, 4, 5], 9)\n    -1\n    \"\"\"\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            if i - coin >= 0 and dp[i - coin] < dp[i]:\n                dp[i] = dp[i - coin] + 1\n    return dp[amount]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 3,
+        "expected": 3,
+        "passed": true
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": Infinity,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:46:33.435278",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Natural language",
+    "scaffold": "Direct",
+    "verbosity": "Verbose",
+    "output": "Code only",
+    "passed": false,
+    "error": "name 'self' is not defined",
+    "raw_code": "def coin_change(coins: List[int], amount: int) -> int:\n    return self.coinChangeHelper(amount, coins, 0)",
+    "code": "def coin_change(coins: List[int], amount: int) -> int:\n    return self.coinChangeHelper(amount, coins, 0)",
+    "test_results": []
+  },
+  {
+    "timestamp": "2025-09-28T20:46:38.939608",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Natural language",
+    "scaffold": "Direct",
+    "verbosity": "Verbose",
+    "output": "Code + explanation",
+    "passed": false,
+    "error": "name 'Solution' is not defined",
+    "raw_code": "class Solution:\n    def coinChange(self, coins: List[int], amount: int) -> int:\n        # Initialize a list to store the number of coins required for each amount from 0 to 'amount'\n        dp = [float('inf')] * (amount + 1)\n        dp[0] = 0  # Base case: there's one way to make up an empty amount\n        \n        # Iterate through each coin value\n        for i in range(1, len(coins) + 1):\n            # Iterate through each amount from 0 to 'amount'\n            for j in range(amount + 1):\n                if coins[i - 1] <= j:\n                    dp[j] = min(dp[j], dp[j - coins[i - 1]] + 1)\n        \n        return dp[-1]",
+    "code": "def coin_change(self, coins: List[int], amount: int) -> int:\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for i in range(1, len(coins) + 1):\n        for j in range(amount + 1):\n            if coins[i - 1] <= j:\n                dp[j] = min(dp[j], dp[j - coins[i - 1]] + 1)\n    return dp[-1]\ndef coin_change(*args, **kwargs):\n    return Solution().coin_change(*args, **kwargs)\n",
+    "test_results": []
+  },
+  {
+    "timestamp": "2025-09-28T20:46:49.117747",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Natural language",
+    "scaffold": "Direct",
+    "verbosity": "Verbose",
+    "output": "Code + tests + explanation",
+    "passed": true,
+    "error": "",
+    "raw_code": "def coin_change(coins, amount):\n    # Initialize DP array where dp[i] will store the minimum number of coins to make up i\n    dp = [float('inf')] * (amount + 1)\n    \n    # Base case: if amount is 0, no coins are needed\n    dp[0] = 0\n    \n    # Fill in the DP table\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            dp[i] = min(dp[i], dp[i - coin] + 1)\n    \n    return dp[amount] if dp[amount] != float('inf') else -1\n\n# Test cases to verify the correctness of the function\nprint(coin_change([1,2,5], 11))  # Output: 3\nprint(coin_change([2], 3))      # Output: -1\nprint(coin_change([1], 0))       # Output: 0",
+    "code": "def coin_change(coins, amount):\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            dp[i] = min(dp[i], dp[i - coin] + 1)\n    return dp[amount] if dp[amount] != float('inf') else -1",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 3,
+        "expected": 3,
+        "passed": true
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": -1,
+        "expected": -1,
+        "passed": true
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:46:58.869720",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Natural language",
+    "scaffold": "Step-by-step",
+    "verbosity": "Minimal",
+    "output": "Code only",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins, amount):\n    if not coins or amount < 0:\n        return -1\n\n    # Initialize the dp array with a large value\n    dp = [float('inf')] * (amount + 1)\n    \n    # Base cases\n    dp[0] = 0  # No coins needed to make up 0\n\n    # Fill the dp array\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            if i >= coin:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n\n    return dp[amount]\n\n# Example usage:\nprint(coin_change([2, 3, 4], 5))  # Output: 2\nprint(coin_change([1, 2, 5], 10))  # Output: 3\nprint(coin_change([1, 2, 7], 18))  # Output: 3",
+    "code": "def coin_change(coins, amount):\n    if not coins or amount < 0:\n        return -1\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            if i >= coin:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    return dp[amount]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 3,
+        "expected": 3,
+        "passed": true
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": Infinity,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:47:08.714329",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Natural language",
+    "scaffold": "Step-by-step",
+    "verbosity": "Minimal",
+    "output": "Code + explanation",
+    "passed": true,
+    "error": "",
+    "raw_code": "def coin_change(coins: List[int], amount: int) -> int:\n    # Initialize variables\n    min_coins = 0\n    coins_used = []\n\n    # Sort the list of coins in descending order to use the largest coins first\n    coins.sort(reverse=True)\n\n    # Iterate over each coin denomination\n    for coin in coins:\n        while amount >= coin:\n            # Add the coin to the list of used coins\n            coins_used.append(coin)\n            # Update the minimum number of coins needed\n            min_coins += 1\n            # Subtract the cost of the coin from the total amount\n            amount -= coin\n\n    # If the total amount is not fully accounted for, return -1\n    if amount > 0:\n        return -1\n\n    return min_coins\n\n# Example usage:\nprint(coin_change([2, 5, 7], 9))  # Output: 4\nprint(coin_change([1, 2, 3], 10))  # Output: 3\nprint(coin_change([1, 2, 3], 11))  # Output: -1 (no combination possible)",
+    "code": "def coin_change(coins: List[int], amount: int) -> int:\n    min_coins = 0\n    coins_used = []\n    coins.sort(reverse=True)\n    for coin in coins:\n        while amount >= coin:\n            coins_used.append(coin)\n            min_coins += 1\n            amount -= coin\n    if amount > 0:\n        return -1\n    return min_coins",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 3,
+        "expected": 3,
+        "passed": true
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": -1,
+        "expected": -1,
+        "passed": true
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:47:21.189986",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Natural language",
+    "scaffold": "Step-by-step",
+    "verbosity": "Minimal",
+    "output": "Code + tests + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins, amount):\n    # Initialize variables\n    n = 0  # Number of coins needed\n    dp = [[float('inf')] * (amount + 1) for _ in range(len(coins))]\n\n    # Fill the DP table\n    for i, coin in enumerate(coins):\n        for j in range(amount + 1):\n            if j >= coin:\n                dp[i][j] = min(dp[i][j], dp[i - 1][j - coin] + 1)\n\n    # Return the minimum value of dp[0][amount]\n    return dp[-1][amount] if dp else -1\n\n# Test cases\nprint(coin_change([2, 3, 4], 5))  # Output: 1 (2+2+2)\nprint(coin_change([1, 2, 3, 4], 10)) # Output: 3 (2+2+2+3)\nprint(coin_change([1, 2, 3, 4], 6))  # Output: -1 (no combination of coins sums to 6)",
+    "code": "def coin_change(coins, amount):\n    n = 0\n    dp = [[float('inf')] * (amount + 1) for _ in range(len(coins))]\n    for i, coin in enumerate(coins):\n        for j in range(amount + 1):\n            if j >= coin:\n                dp[i][j] = min(dp[i][j], dp[i - 1][j - coin] + 1)\n    return dp[-1][amount] if dp else -1",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": Infinity,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": Infinity,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": Infinity,
+        "expected": 0,
+        "passed": false
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:47:33.941121",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Natural language",
+    "scaffold": "Step-by-step",
+    "verbosity": "Medium",
+    "output": "Code only",
+    "passed": false,
+    "error": "",
+    "raw_code": "from typing import List\n\ndef coin_change(coins: List[int], amount: int) -> int:\n    # If the total amount is zero, no change is needed\n    if amount == 0:\n        return 0\n    \n    min_coins = amount + 1\n    for coin in coins:\n        # If the current coin is less than or equal to the remaining amount, update the minimum number of coins\n        if coin <= amount:\n            min_coins = min(min_coins, 1 + coin_change(coins, amount - coin))\n    \n    return min_coins\n\n# Example usage:\nprint(coin_change([1, 2, 5], 6))  # Output: 3 (1 + 1 + 1)\nprint(coin_change([2, 3, 4], 7))  # Output: 2 (2 + 2)\nprint(coin_change([10], 100))  # Output: 0 (no change needed)",
+    "code": "def coin_change(coins: List[int], amount: int) -> int:\n    if amount == 0:\n        return 0\n    min_coins = amount + 1\n    for coin in coins:\n        if coin <= amount:\n            min_coins = min(min_coins, 1 + coin_change(coins, amount - coin))\n    return min_coins",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 3,
+        "expected": 3,
+        "passed": true
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": 3,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:47:41.633999",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Natural language",
+    "scaffold": "Step-by-step",
+    "verbosity": "Medium",
+    "output": "Code + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins: list[int], amount: int) -> int:\n    # Sort the coins to prioritize larger values first\n    coins.sort(reverse=True)\n    \n    # Initialize a counter for the number of coins needed\n    count = 0\n    \n    # Iterate over each coin\n    for coin in coins:\n        while amount >= coin:\n            amount -= coin\n            count += 1\n    \n    return count\n\n# Example usage:\ncoins = [1, 2, 5, 10]\namount = 23\nprint(coin_change(coins, amount))  # Output: 4",
+    "code": "def coin_change(coins: list[int], amount: int) -> int:\n    coins.sort(reverse=True)\n    count = 0\n    for coin in coins:\n        while amount >= coin:\n            amount -= coin\n            count += 1\n    return count",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 3,
+        "expected": 3,
+        "passed": true
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": 1,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:47:48.204862",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Natural language",
+    "scaffold": "Step-by-step",
+    "verbosity": "Medium",
+    "output": "Code + tests + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins: list[int], amount: int) -> int:\n    # Create a list to store the minimum number of coins needed for each amount\n    dp = [float('inf')] * (amount + 1)\n    \n    # Base case: if the amount is 0, no coins are needed\n    dp[0] = 0\n    \n    # Fill the DP table\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            # If the current coin value is less than or equal to the current amount, add one more coin\n            if coin <= i:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    \n    return dp[amount]\n\n# Test cases\nprint(coin_change([1, 2, 5], 10))  # Output: 3\nprint(coin_change([2, 4, 6], 7))  # Output: 2\nprint(coin_change([1, 3, 4], 8))  # Output: 3\nprint(coin_change([1, 5, 9], 100))  # Output: 4",
+    "code": "def coin_change(coins: list[int], amount: int) -> int:\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            if coin <= i:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    return dp[amount]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 3,
+        "expected": 3,
+        "passed": true
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": Infinity,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:47:58.015275",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Natural language",
+    "scaffold": "Step-by-step",
+    "verbosity": "Verbose",
+    "output": "Code only",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins: List[int], amount: int) -> int:\n    # Base cases: if amount is zero or not a valid combination of coins, return 0\n    if amount == 0:\n        return 0\n    elif len(coins) == 0:\n        return -1\n\n    # Initialize variables to store the minimum number of coins needed for each amount\n    min_coins = [float('inf')] * (amount + 1)\n\n    # Iterate through each coin in descending order (largest coin first)\n    for coin in sorted(coins, reverse=True):\n        # If the current coin can make up the remaining amount\n        if coin <= amount:\n            # Update the minimum number of coins needed for this amount\n            min_coins[amount] = min(min_coins[amount], 1 + min_coins[amount - coin])\n\n    return min_coins[-1]",
+    "code": "def coin_change(coins: List[int], amount: int) -> int:\n    if amount == 0:\n        return 0\n    elif len(coins) == 0:\n        return -1\n    min_coins = [float('inf')] * (amount + 1)\n    for coin in sorted(coins, reverse=True):\n        if coin <= amount:\n            min_coins[amount] = min(min_coins[amount], 1 + min_coins[amount - coin])\n    return min_coins[-1]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": Infinity,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": Infinity,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:48:02.018906",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Natural language",
+    "scaffold": "Step-by-step",
+    "verbosity": "Verbose",
+    "output": "Code + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins: List[int], amount: int) -> int:\n    # Base case: if the amount is 0, no coins are needed\n    if amount == 0:\n        return 0\n    \n    # Base case: if the amount is less than 0, it's not possible to make up that amount\n    if amount < 0:\n        return -1\n    \n    # Initialize a DP table with infinity\n    dp = [float('inf')] * (amount + 1)\n    \n    # Set the base cases\n    for coin in coins:\n        dp[coin] = 1\n    \n    # Fill the DP table using memoization\n    for i in range(1, amount + 1):\n        for coin in coins:\n            if coin >= i:\n                dp[i] = min(dp[i], 1 + dp[i - coin])\n    \n    # The result is stored in dp[amount]\n    return dp[amount]\n\n# Example usage:\nprint(coin_change([1, 2, 5], 11))  # Output: 3\nprint(coin_change([2], 3))          # Output: -1\nprint(coin_change([1], 0))         # Output: 0",
+    "code": "def coin_change(coins: List[int], amount: int) -> int:\n    if amount == 0:\n        return 0\n    if amount < 0:\n        return -1\n    dp = [float('inf')] * (amount + 1)\n    for coin in coins:\n        dp[coin] = 1\n    for i in range(1, amount + 1):\n        for coin in coins:\n            if coin >= i:\n                dp[i] = min(dp[i], 1 + dp[i - coin])\n    return dp[amount]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": Infinity,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": Infinity,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:48:17.320277",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Natural language",
+    "scaffold": "Step-by-step",
+    "verbosity": "Verbose",
+    "output": "Code + tests + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins: List[int], amount: int) -> int:\n    # If the amount is 0, no coins are needed\n    if amount == 0:\n        return 0\n    \n    # Initialize a list to store the minimum number of coins for each amount\n    dp = [amount + 1] * (amount + 1)\n    \n    # Base case: any amount of money requires at least one coin of each type\n    for i in range(len(coins)):\n        dp[i + 1] = min(dp[i + 1], dp[i] + 1)\n    \n    # Iterate through each possible amount to find the minimum number of coins needed\n    for i in range(1, amount + 1):\n        for coin in coins:\n            if coin <= i:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    \n    return dp[-1]\n\n# Test cases\nprint(coin_change([1, 2, 5], 11))  # Output: 3\nprint(coin_change([2], 3))          # Output: -1\nprint(coin_change([1], 0))          # Output: 0",
+    "code": "def coin_change(coins: List[int], amount: int) -> int:\n    if amount == 0:\n        return 0\n    dp = [amount + 1] * (amount + 1)\n    for i in range(len(coins)):\n        dp[i + 1] = min(dp[i + 1], dp[i] + 1)\n    for i in range(1, amount + 1):\n        for coin in coins:\n            if coin <= i:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    return dp[-1]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 12,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": 4,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:48:28.167112",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Natural language",
+    "scaffold": "Self-checking",
+    "verbosity": "Minimal",
+    "output": "Code only",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins: List[int], amount: int) -> int:\n    # Base case: if the amount is 0, no coins are needed\n    if amount == 0:\n        return 0\n    \n    # If there are no coins left to use, return -1\n    if not coins:\n        return -1\n    \n    # Initialize a list to store the minimum number of coins for each amount\n    dp = [float('inf')] * (amount + 1)\n    \n    # Base case: coin 1 can be used as a unit\n    dp[0] = 1\n    \n    # Fill the dp array using dynamic programming\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            dp[i] = min(dp[i], dp[i - coin] + 1)\n    \n    return dp[amount]\n\n# Example usage:\ncoins = [3, 7]\namount = 12\nprint(coin_change(coins, amount))  # Output: 3 (3 + 3 + 3)",
+    "code": "def coin_change(coins: List[int], amount: int) -> int:\n    if amount == 0:\n        return 0\n    if not coins:\n        return -1\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 1\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            dp[i] = min(dp[i], dp[i - coin] + 1)\n    return dp[amount]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 4,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": Infinity,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:48:37.406902",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Natural language",
+    "scaffold": "Self-checking",
+    "verbosity": "Minimal",
+    "output": "Code + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins: List[int], amount: int) -> int:\n    \"\"\"\n    Given an array of integers `coins` representing coins of different denominations and an integer `amount`,\n    find the fewest number of coins that you need to make up that amount. If that amount of money cannot be made up by any combination\n    of the coins, return -1.\n\n    Example:\n        coin_change([1, 2, 5], 11) == 3 (1 + 5)\n        coin_change([2, 4, 6], 10) == 3 (2 + 4)\n        coin_change([1, 2, 7], 100) == -1\n    \"\"\"\n    # Initialize the minimum number of coins and list to store selected coins\n    min_coins = amount + 1\n    selected_coins = []\n\n    # Iterate through each coin in the array\n    for coin in coins:\n        # Check if the current coin can be used to make up the remaining amount\n        if coin <= amount:\n            # If the current coin is less than or equal to the remaining amount, add it to the selected coins list and subtract the coin value from the total amount\n            selected_coins.append(coin)\n            amount -= coin\n\n    # Check if we have enough money left after processing all coins\n    return min_coins if amount == 0 else -1\n\n# Test cases\nprint(coin_change([1, 2, 5], 11))  # Output: 3 (1 + 5)\nprint(coin_change([2, 4, 6], 10))  # Output: 3 (2 + 4)\nprint(coin_change([1, 2, 7], 100))  # Output: -1",
+    "code": "def coin_change(coins: List[int], amount: int) -> int:\n    \"\"\"\n    Given an array of integers `coins` representing coins of different denominations and an integer `amount`,\n    find the fewest number of coins that you need to make up that amount. If that amount of money cannot be made up by any combination\n    of the coins, return -1.\n\n    Example:\n        coin_change([1, 2, 5], 11) == 3 (1 + 5)\n        coin_change([2, 4, 6], 10) == 3 (2 + 4)\n        coin_change([1, 2, 7], 100) == -1\n    \"\"\"\n    min_coins = amount + 1\n    selected_coins = []\n    for coin in coins:\n        if coin <= amount:\n            selected_coins.append(coin)\n            amount -= coin\n    return min_coins if amount == 0 else -1",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": -1,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": -1,
+        "expected": -1,
+        "passed": true
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 1,
+        "expected": 0,
+        "passed": false
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:48:57.370400",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Natural language",
+    "scaffold": "Self-checking",
+    "verbosity": "Minimal",
+    "output": "Code + tests + explanation",
+    "passed": true,
+    "error": "",
+    "raw_code": "def coin_change(coins, amount):\n    \"\"\"\n    Given a list of denominations for different coins and an integer representing a total amount,\n    return the fewest number of coins that can be used to make up that amount. If that amount of money cannot\n    be made up by any combination of the coins, return -1.\n\n    Args:\n    coins (list): A list of integers where each integer represents a different coin denomination.\n    amount (int): The total amount of money to make up with the given coins.\n\n    Returns:\n    int: The minimum number of coins required to make up the amount or -1 if it's not possible.\n    \"\"\"\n    # Initialize the DP array\n    dp = [amount + 1] * (amount + 1)\n    dp[0] = 0\n\n    # Iterate through each coin denomination and calculate the maximum number of coins needed\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            dp[i] = min(dp[i], dp[i - coin] + 1)\n\n    # Check if we can make up the total amount using any combination of coins\n    if dp[amount] > amount:\n        return -1\n\n    return dp[amount]\n\n# Test cases to verify the correctness of the function\ndef test_coin_change():\n    assert coin_change([2, 3], 5) == 1, \"Test case 1 failed\"\n    assert coin_change([1, 2, 5], 10) == 3, \"Test case 2 failed\"\n    assert coin_change([1, 2, 5, 10], 7) == -1, \"Test case 3 failed\"\n    print(\"All test cases passed!\")\n\n# Run the test cases\ntest_coin_change()",
+    "code": "def coin_change(coins, amount):\n    \"\"\"\n    Given a list of denominations for different coins and an integer representing a total amount,\n    return the fewest number of coins that can be used to make up that amount. If that amount of money cannot\n    be made up by any combination of the coins, return -1.\n\n    Args:\n    coins (list): A list of integers where each integer represents a different coin denomination.\n    amount (int): The total amount of money to make up with the given coins.\n\n    Returns:\n    int: The minimum number of coins required to make up the amount or -1 if it's not possible.\n    \"\"\"\n    dp = [amount + 1] * (amount + 1)\n    dp[0] = 0\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            dp[i] = min(dp[i], dp[i - coin] + 1)\n    if dp[amount] > amount:\n        return -1\n    return dp[amount]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 3,
+        "expected": 3,
+        "passed": true
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": -1,
+        "expected": -1,
+        "passed": true
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:49:16.115689",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Natural language",
+    "scaffold": "Self-checking",
+    "verbosity": "Medium",
+    "output": "Code only",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins: list[int], amount: int) -> int:\n    # Sort the coins in descending order to handle larger values first\n    coins.sort(reverse=True)\n    \n    result = [0] * (amount + 1)\n    \n    for i, coin in enumerate(coins):\n        # Check if we can make the current amount with the current coin\n        if amount >= coin:\n            # Update the result array by adding the number of ways to make the remaining amount with the current coin\n            result[amount] = min(result[amount], 1 + result[amount - coin])\n    \n    return result[amount]\n\n# Example usage:\ncoins = [1, 2, 5]\namount = 11\nprint(coin_change(coins, amount))  # Output: 3 (2 + 1 + 1)",
+    "code": "def coin_change(coins: list[int], amount: int) -> int:\n    coins.sort(reverse=True)\n    result = [0] * (amount + 1)\n    for i, coin in enumerate(coins):\n        if amount >= coin:\n            result[amount] = min(result[amount], 1 + result[amount - coin])\n    return result[amount]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 0,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": 0,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:49:29.676708",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Natural language",
+    "scaffold": "Self-checking",
+    "verbosity": "Medium",
+    "output": "Code + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins: list[int], amount: int) -> int:\n    # Sort the coins to ensure we start with the smallest denomination\n    coins.sort()\n    \n    min_coins = 0\n    \n    for coin_size in range(1, amount + 1):\n        if amount >= coin_size:\n            # Calculate how many times the current size can fit into the remaining amount\n            num_coins = amount // coin_size\n            min_coins += num_coins\n            # Update the remaining amount after fitting this size\n            amount -= num_coins * coin_size\n    \n    return min_coins\n\n# Example usage:\nprint(coin_change([1, 2, 5], 7))  # Output: 3 (1 + 2 + 5)\nprint(coin_change([2, 3, 4, 6, 7], 9))  # Output: 3 (2 + 3 + 5)\nprint(coin_change([2, 3, 4, 5], 10))  # Output: -1 (Not possible to make up 10 with the given denominations)",
+    "code": "def coin_change(coins: list[int], amount: int) -> int:\n    coins.sort()\n    min_coins = 0\n    for coin_size in range(1, amount + 1):\n        if amount >= coin_size:\n            num_coins = amount // coin_size\n            min_coins += num_coins\n            amount -= num_coins * coin_size\n    return min_coins",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 11,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": 3,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:49:42.211138",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Natural language",
+    "scaffold": "Self-checking",
+    "verbosity": "Medium",
+    "output": "Code + tests + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins: list[int], amount: int) -> int:\n    if amount < 0:\n        return -1\n    \n    # Sort the coins in ascending order\n    coins.sort()\n    \n    # Initialize a counter for the number of coins needed\n    count = 0\n    \n    # Iterate through each coin\n    for coin in coins:\n        # While we have enough money left and the coin is less than or equal to the amount\n        while amount >= coin and amount >= 0:\n            # Add one to the count of coins and subtract the value of the coin from the amount\n            count += 1\n            amount -= coin\n    \n    return count\n\n# Test cases\nprint(coin_change([1, 2, 5], 11))  # Output: 3 (1 + 2 + 5)\nprint(coin_change([2, 3, 4], 10))  # Output: 2 (2 + 4)\nprint(coin_change([1, 2, 3, 7], 19))  # Output: 4 (2 + 7)\nprint(coin_change([5, 7, 13], 22))  # Output: -1",
+    "code": "def coin_change(coins: list[int], amount: int) -> int:\n    if amount < 0:\n        return -1\n    coins.sort()\n    count = 0\n    for coin in coins:\n        while amount >= coin and amount >= 0:\n            count += 1\n            amount -= coin\n    return count",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 11,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": 1,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:49:56.781282",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Natural language",
+    "scaffold": "Self-checking",
+    "verbosity": "Verbose",
+    "output": "Code only",
+    "passed": true,
+    "error": "",
+    "raw_code": "def coin_change(coins: List[int], amount: int) -> int:\n    # Initialize the dp array with infinity (or any appropriate value)\n    dp = [float('inf')] * (amount + 1)\n    \n    # Base case: if the amount is 0, no coins are needed\n    dp[0] = 0\n    \n    # Iterate over each coin denomination\n    for coin in coins:\n        # Update the dp array for each possible amount\n        for i in range(coin, amount + 1):\n            dp[i] = min(dp[i], dp[i - coin] + 1)\n    \n    return dp[amount] if dp[amount] != float('inf') else -1\n\n# Example usage:\nprint(coin_change([1, 2, 5], 11))  # Output: 3\nprint(coin_change([2], 3))       # Output: -1\nprint(coin_change([1], 0))        # Output: 0",
+    "code": "def coin_change(coins: List[int], amount: int) -> int:\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            dp[i] = min(dp[i], dp[i - coin] + 1)\n    return dp[amount] if dp[amount] != float('inf') else -1",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 3,
+        "expected": 3,
+        "passed": true
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": -1,
+        "expected": -1,
+        "passed": true
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:50:07.653155",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Natural language",
+    "scaffold": "Self-checking",
+    "verbosity": "Verbose",
+    "output": "Code + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins, amount):\n    \"\"\"\n    :type coins: List[int]\n    :type amount: int\n    :rtype: int\n    \"\"\"\n\n    # Initialize the dp array where dp[i] represents the fewest number of coins for amount i\n    dp = [float('inf')] * (amount + 1)\n    \n    # Base case: if amount is 0, it means we can make 0 money with no coins\n    dp[0] = 0\n    \n    # Iterate over each coin denomination\n    for coin in coins:\n        # Update the dp array based on whether to include the current coin or not\n        for i in range(coin, amount + 1):\n            if dp[i - coin] < float('inf'):\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    \n    return dp[amount]\n\n# Test cases\nprint(coin_change([1,2,5], 11))  # Output: 3\nprint(coin_change([2], 3))     # Output: -1\nprint(coin_change([1], 0))      # Output: 0",
+    "code": "def coin_change(coins, amount):\n    \"\"\"\n    :type coins: List[int]\n    :type amount: int\n    :rtype: int\n    \"\"\"\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            if dp[i - coin] < float('inf'):\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    return dp[amount]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 3,
+        "expected": 3,
+        "passed": true
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": Infinity,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:50:20.207148",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Natural language",
+    "scaffold": "Self-checking",
+    "verbosity": "Verbose",
+    "output": "Code + tests + explanation",
+    "passed": false,
+    "error": "name 'Solution' is not defined",
+    "raw_code": "class Solution:\n    def coin_change(self, coins: List[int], amount: int) -> int:\n        # Initialize the DP table with -1 to indicate that it's not yet computed\n        dp = [-1] * (amount + 1)\n        \n        # Base case: if amount is 0, no coins are needed\n        dp[0] = 0\n        \n        # Iterate through each coin in the coins array\n        for coin in coins:\n            # Update dp[i] with the minimum number of coins needed to make up i\n            for i in range(coin, amount + 1):\n                if dp[i - coin] != -1:\n                    dp[i] = min(dp[i], dp[i - coin] + 1)\n        \n        return dp[amount] if dp[amount] != -1 else -1",
+    "code": "def coin_change(self, coins: List[int], amount: int) -> int:\n    dp = [-1] * (amount + 1)\n    dp[0] = 0\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            if dp[i - coin] != -1:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    return dp[amount] if dp[amount] != -1 else -1\ndef coin_change(*args, **kwargs):\n    return Solution().coin_change(*args, **kwargs)\n",
+    "test_results": []
+  },
+  {
+    "timestamp": "2025-09-28T20:50:33.398470",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Docstring + signature",
+    "scaffold": "Direct",
+    "verbosity": "Minimal",
+    "output": "Code only",
+    "passed": false,
+    "error": "name 'Solution' is not defined",
+    "raw_code": "class Solution:\n    def coinChange(self, coins: List[int], amount: int) -> int:\n        dp = [float(\"inf\")] * (amount + 1)\n        dp[0] = 0\n\n        for c in coins:\n            for i in range(c, amount + 1):\n                if dp[i - c] != float(\"inf\"):\n                    dp[i] = min(dp[i], dp[i - c] + 1)\n\n        return dp[-1]",
+    "code": "def coin_change(self, coins: List[int], amount: int) -> int:\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for c in coins:\n        for i in range(c, amount + 1):\n            if dp[i - c] != float('inf'):\n                dp[i] = min(dp[i], dp[i - c] + 1)\n    return dp[-1]\ndef coin_change(*args, **kwargs):\n    return Solution().coin_change(*args, **kwargs)\n",
+    "test_results": []
+  },
+  {
+    "timestamp": "2025-09-28T20:50:35.572748",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Docstring + signature",
+    "scaffold": "Direct",
+    "verbosity": "Minimal",
+    "output": "Code + explanation",
+    "passed": false,
+    "error": "name 'Solution' is not defined",
+    "raw_code": "from typing import List\n\nclass Solution:\n    def coinChange(self, coins: List[int], amount: int) -> int:\n        # Initialize the minimum number of coins needed\n        min_coins = amount + 1\n        \n        # Iterate over each coin in the list\n        for coin in coins:\n            # If the current coin value is greater than or equal to the amount, skip this iteration\n            if coin > amount:\n                continue\n            \n            # Try adding the coin to the current number of coins needed\n            new_coins_needed = min_coins - coin\n            # Update the minimum number of coins needed if the new number of coins needed is less\n            min_coins = min(min_coins, new_coins_needed)\n        \n        return min_coins if min_coins <= amount else -1\n\n# Example usage:\nprint(coin_change([2, 3, 4], 5))  # Output: 2 (2 + 3 + 4 = 9)",
+    "code": "def coin_change(self, coins: List[int], amount: int) -> int:\n    min_coins = amount + 1\n    for coin in coins:\n        if coin > amount:\n            continue\n        new_coins_needed = min_coins - coin\n        min_coins = min(min_coins, new_coins_needed)\n    return min_coins if min_coins <= amount else -1\ndef coin_change(*args, **kwargs):\n    return Solution().coin_change(*args, **kwargs)\n",
+    "test_results": []
+  },
+  {
+    "timestamp": "2025-09-28T20:50:53.400078",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Docstring + signature",
+    "scaffold": "Direct",
+    "verbosity": "Medium",
+    "output": "Code only",
+    "passed": false,
+    "error": "name 'Solution' is not defined",
+    "raw_code": "from typing import List\n\nclass Solution:\n    def coinChange(self, coins: List[int], amount: int) -> int:\n        if amount == 0:\n            return 0\n        \n        dp = [amount + 1] * (amount + 1)\n        dp[0] = 0\n        \n        for i in range(1, len(dp)):\n            for coin in coins:\n                if i - coin >= 0:\n                    dp[i] = min(dp[i], dp[i - coin] + 1)\n        \n        return dp[amount]",
+    "code": "def coin_change(self, coins: List[int], amount: int) -> int:\n    if amount == 0:\n        return 0\n    dp = [amount + 1] * (amount + 1)\n    dp[0] = 0\n    for i in range(1, len(dp)):\n        for coin in coins:\n            if i - coin >= 0:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    return dp[amount]\ndef coin_change(*args, **kwargs):\n    return Solution().coin_change(*args, **kwargs)\n",
+    "test_results": []
+  },
+  {
+    "timestamp": "2025-09-28T20:50:55.591314",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Docstring + signature",
+    "scaffold": "Direct",
+    "verbosity": "Medium",
+    "output": "Code + explanation",
+    "passed": true,
+    "error": "",
+    "raw_code": "# Import necessary packages at the beginning of the code snippet\nfrom typing import List\n\ndef coin_change(coins: List[int], amount: int) -> int:\n    \"\"\"\n    Given an array of coins representing different denominations and an integer amount representing a total amount of money,\n    return the fewest number of coins that you need to make up that amount. If that amount of money cannot be made up by any combination\n    of the coins, return -1.\n    \n    :param coins: List[int] - A list of integers where each integer represents a different denomination of coin.\n    :param amount: int - The total amount of money you need to make up.\n    :return: int - The fewest number of coins that need to be made up that amount, or -1 if it's not possible to make the amount.\n    \n    Example:\n        >>> coin_change([1, 2, 5], 11)\n        3\n        >>> coin_change([2, 3, 4], 7)\n        -1\n    \"\"\"\n    # Initialize a list to keep track of the minimum number of coins needed for each amount from 0 to the given amount\n    dp = [float('inf')] * (amount + 1)\n    \n    # Base case: if we need to make $0, no coins are needed\n    dp[0] = 0\n    \n    # Iterate over each coin value in the list\n    for coin in coins:\n        # Update the minimum number of coins needed for the current amount by adding 1 if it's possible to make that amount with the current coin\n        for i in range(amount + 1):\n            if i >= coin:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    \n    # If the minimum number of coins is still infinity, it means we cannot make the given amount using any combination of the coins\n    return dp[-1] if dp[-1] != float('inf') else -1\n\n# Example usage:\nprint(coin_change([1, 2, 5], 11))  # Output: 3\nprint(coin_change([2, 3, 4], 7))   # Output: -1",
+    "code": "def coin_change(coins: List[int], amount: int) -> int:\n    \"\"\"\n    Given an array of coins representing different denominations and an integer amount representing a total amount of money,\n    return the fewest number of coins that you need to make up that amount. If that amount of money cannot be made up by any combination\n    of the coins, return -1.\n    \n    :param coins: List[int] - A list of integers where each integer represents a different denomination of coin.\n    :param amount: int - The total amount of money you need to make up.\n    :return: int - The fewest number of coins that need to be made up that amount, or -1 if it's not possible to make the amount.\n    \n    Example:\n        >>> coin_change([1, 2, 5], 11)\n        3\n        >>> coin_change([2, 3, 4], 7)\n        -1\n    \"\"\"\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for coin in coins:\n        for i in range(amount + 1):\n            if i >= coin:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    return dp[-1] if dp[-1] != float('inf') else -1",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 3,
+        "expected": 3,
+        "passed": true
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": -1,
+        "expected": -1,
+        "passed": true
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:51:09.666752",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Docstring + signature",
+    "scaffold": "Direct",
+    "verbosity": "Medium",
+    "output": "Code + tests + explanation",
+    "passed": false,
+    "error": "11",
+    "raw_code": "from typing import List\n\ndef coin_change(coins: List[int], amount: int) -> int:\n    \"\"\"\n    Return the fewest number of coins that need to make up the given amount.\n    \n    :param coins: A list of integers representing coins of different denominations.\n    :param amount: An integer representing a total amount of money.\n    :return: The fewest number of coins that can be made up that amount. If that amount of money cannot be made up by any combination of the coins, return -1.\n    \n    Example:\n        >>> coin_change([1, 2, 5], 11)\n        3\n        # Explanation: 11 = 1 + 1 + 4 (2 coins)\n        \n        >>> coin_change([2, 7], 18)\n        5\n        # Explanation: 18 = 2 + 6 (2 coins)\n    \"\"\"\n    # Edge case for amount == 0\n    if amount == 0:\n        return 0\n    \n    # Dictionary to store the minimum number of coins needed for each amount\n    min_coins = {}\n    \n    # Iterate over all possible amounts from 1 to the given amount\n    for i in range(1, amount + 1):\n        # If no coins are needed for this amount, skip it\n        if i not in min_coins:\n            continue\n        \n        # Find the minimum number of coins required for each coin value and add it to the dictionary\n        for coin_value in coins:\n            # Calculate the minimum number of coins needed with the current coin value\n            if (i - coin_value) >= 0:\n                # If the remaining amount can be made with this coin value, add the coin value to the total count\n                min_coins[i] = min(min_coins.get(i, float('inf')), 1 + min_coins[(i - coin_value)])\n    \n    return min_coins[amount]\n\n# Check function to verify the correctness of the solution\ndef check_solution():\n    assert coin_change([1, 2, 5], 11) == 3\n    assert coin_change([2, 7], 18) == 5\n    assert coin_change([1, 5, 6, 9], 10) == 4\n    assert coin_change([10], 100) == 1\n\ncheck_solution()",
+    "code": "def coin_change(coins: List[int], amount: int) -> int:\n    \"\"\"\n    Return the fewest number of coins that need to make up the given amount.\n    \n    :param coins: A list of integers representing coins of different denominations.\n    :param amount: An integer representing a total amount of money.\n    :return: The fewest number of coins that can be made up that amount. If that amount of money cannot be made up by any combination of the coins, return -1.\n    \n    Example:\n        >>> coin_change([1, 2, 5], 11)\n        3\n        # Explanation: 11 = 1 + 1 + 4 (2 coins)\n        \n        >>> coin_change([2, 7], 18)\n        5\n        # Explanation: 18 = 2 + 6 (2 coins)\n    \"\"\"\n    if amount == 0:\n        return 0\n    min_coins = {}\n    for i in range(1, amount + 1):\n        if i not in min_coins:\n            continue\n        for coin_value in coins:\n            if i - coin_value >= 0:\n                min_coins[i] = min(min_coins.get(i, float('inf')), 1 + min_coins[i - coin_value])\n    return min_coins[amount]",
+    "test_results": []
+  },
+  {
+    "timestamp": "2025-09-28T20:51:28.560468",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Docstring + signature",
+    "scaffold": "Direct",
+    "verbosity": "Verbose",
+    "output": "Code + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins: list[int], amount: int) -> int:\n    # Edge case: if the amount is zero, return 0 because it can be made with no coins\n    if amount == 0:\n        return 0\n    \n    # Initialize a dynamic programming table to keep track of the minimum number of coins needed for each amount\n    dp = [float('inf')] * (amount + 1)\n    \n    # Base case: if we have an empty list of coins or the amount is 0, the minimum number of coins needed is 0\n    dp[0] = 0\n    \n    # Fill in the DP table\n    for i in range(1, amount + 1):\n        for coin in coins:\n            if coin <= i:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    \n    return dp[-1]",
+    "code": "def coin_change(coins: list[int], amount: int) -> int:\n    if amount == 0:\n        return 0\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for i in range(1, amount + 1):\n        for coin in coins:\n            if coin <= i:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    return dp[-1]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 3,
+        "expected": 3,
+        "passed": true
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": Infinity,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:51:40.467143",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Docstring + signature",
+    "scaffold": "Direct",
+    "verbosity": "Verbose",
+    "output": "Code + tests + explanation",
+    "passed": true,
+    "error": "",
+    "raw_code": "def coin_change(coins: list[int], amount: int) -> int:\n    # Create a DP array where dp[i] represents the minimum number of coins required to make up amount i\n    dp = [float('inf')] * (amount + 1)\n    \n    # Base case: no coins needed for amount 0\n    dp[0] = 0\n    \n    # Fill the DP array using memoization\n    for i in range(1, amount + 1):\n        for coin in coins:\n            if i >= coin:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    \n    # Return the minimum number of coins required to make up the amount\n    return dp[amount] if dp[amount] != float('inf') else -1\n\n# Test cases\nprint(coin_change([1, 2, 5], 11))  # Output: 3\nprint(coin_change([2], 3))       # Output: -1\nprint(coin_change([1], 0))        # Output: 0",
+    "code": "def coin_change(coins: list[int], amount: int) -> int:\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for i in range(1, amount + 1):\n        for coin in coins:\n            if i >= coin:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    return dp[amount] if dp[amount] != float('inf') else -1",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 3,
+        "expected": 3,
+        "passed": true
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": -1,
+        "expected": -1,
+        "passed": true
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:51:52.843576",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Docstring + signature",
+    "scaffold": "Step-by-step",
+    "verbosity": "Minimal",
+    "output": "Code only",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins: list[int], amount: int) -> int:\n    # Initialize a DP table with a large value for all amounts\n    dp = [float('inf')] * (amount + 1)\n    \n    # Base case: if the amount is 0, no coins are needed\n    dp[0] = 0\n    \n    # Fill the DP table using bottom-up approach\n    for coin in coins:\n        for i in range(amount + 1):\n            if i >= coin:\n                # Update the DP table with the minimum number of coins needed to make up the current amount\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    \n    return dp[amount]\n\n# Example usage:\ncoins = [1, 2, 5]\namount = 7\nprint(coin_change(coins, amount))  # Output: 2 (2 coins needed for 7)",
+    "code": "def coin_change(coins: list[int], amount: int) -> int:\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for coin in coins:\n        for i in range(amount + 1):\n            if i >= coin:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    return dp[amount]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 3,
+        "expected": 3,
+        "passed": true
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": Infinity,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:52:13.728573",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Docstring + signature",
+    "scaffold": "Step-by-step",
+    "verbosity": "Minimal",
+    "output": "Code + tests + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins: list[int], amount: int) -> int:\n    # Initialize the dp array with a large value for all amounts\n    dp = [float('inf')] * (amount + 1)\n    \n    # Base case: No coins needed to make up 0\n    dp[0] = 0\n    \n    # Iterate over each coin in the list\n    for c in coins:\n        # Check if the current coin is valid and update dp[i]\n        for i in range(c, amount + 1):\n            # If it's a valid coin, update dp[i]\n            dp[i] = min(dp[i], dp[i - c] + 1)\n    \n    return dp[amount]\n\n# Test cases\nprint(coin_change([2, 3, 4], 9))  # Output: 3 (3, 3, 3)\nprint(coin_change([1, 2, 5, 10], 8))  # Output: 2 (3, 2)",
+    "code": "def coin_change(coins: list[int], amount: int) -> int:\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for c in coins:\n        for i in range(c, amount + 1):\n            dp[i] = min(dp[i], dp[i - c] + 1)\n    return dp[amount]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 3,
+        "expected": 3,
+        "passed": true
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": Infinity,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:52:26.770618",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Docstring + signature",
+    "scaffold": "Step-by-step",
+    "verbosity": "Medium",
+    "output": "Code only",
+    "passed": false,
+    "error": "name 'Solution' is not defined",
+    "raw_code": "class Solution:\n    def coinChange(self, coins: list[int], amount: int) -> int:\n        # Initialize the minimum number of coins needed for each amount to infinity\n        dp = [float('inf')] * (amount + 1)\n        \n        # Base case: if amount is 0, no coins are needed\n        dp[0] = 0\n        \n        # Iterate over each coin denomination\n        for coin in coins:\n            # Update the minimum number of coins needed for the current amount by using the previous amount\n            for i in range(coin, amount + 1):\n                # If the current amount is greater than or equal to the coin's value, use it to update the minimum number of coins needed\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n        \n        return dp[amount] if dp[amount] != float('inf') else -1",
+    "code": "def coin_change(self, coins: list[int], amount: int) -> int:\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            dp[i] = min(dp[i], dp[i - coin] + 1)\n    return dp[amount] if dp[amount] != float('inf') else -1\ndef coin_change(*args, **kwargs):\n    return Solution().coin_change(*args, **kwargs)\n",
+    "test_results": []
+  },
+  {
+    "timestamp": "2025-09-28T20:52:30.538427",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Docstring + signature",
+    "scaffold": "Step-by-step",
+    "verbosity": "Medium",
+    "output": "Code + explanation",
+    "passed": true,
+    "error": "",
+    "raw_code": "def coin_change(coins: list[int], amount: int) -> int:\n    # Initialize DP array where dp[i] represents the minimum number of coins needed to make up the amount i\n    dp = [float('inf')] * (amount + 1)\n    \n    # Base case: if amount is 0, no coins are needed\n    dp[0] = 0\n    \n    # Iterate through each coin in the array of denominations\n    for coin in coins:\n        # Update the DP table based on whether using the current coin can make up the remaining amount\n        for i in range(amount + 1):\n            if i >= coin:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    \n    return dp[amount] if dp[amount] != float('inf') else -1\n\n# Example usage:\ncoins = [1, 2, 5]\namount = 11\nprint(coin_change(coins, amount))  # Output: 3 (2 + 1 + 1)",
+    "code": "def coin_change(coins: list[int], amount: int) -> int:\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for coin in coins:\n        for i in range(amount + 1):\n            if i >= coin:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    return dp[amount] if dp[amount] != float('inf') else -1",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 3,
+        "expected": 3,
+        "passed": true
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": -1,
+        "expected": -1,
+        "passed": true
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:52:43.565966",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Docstring + signature",
+    "scaffold": "Step-by-step",
+    "verbosity": "Medium",
+    "output": "Code + tests + explanation",
+    "passed": true,
+    "error": "",
+    "raw_code": "def coin_change(coins: list[int], amount: int) -> int:\n    # Initialize the dp array with a very large number\n    dp = [float('inf')] * (amount + 1)\n    \n    # Base case: if we have no coins, return -1\n    dp[0] = 0\n    \n    # Iterate over each coin denomination\n    for coin in sorted(coins):\n        # Try to use the coin as many times as possible with the current amount\n        for i in range(coin, amount + 1):\n            if i >= coin:\n                # Update the minimum number of coins needed\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    \n    return dp[amount] if dp[amount] != float('inf') else -1\n\n# Test cases\nprint(coin_change([25, 10, 5], 37))  # Output: 4 (3 + 2 + 1)\nprint(coin_change([25, 10, 5], 89))  # Output: -1 (No combination works)",
+    "code": "def coin_change(coins: list[int], amount: int) -> int:\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for coin in sorted(coins):\n        for i in range(coin, amount + 1):\n            if i >= coin:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    return dp[amount] if dp[amount] != float('inf') else -1",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 3,
+        "expected": 3,
+        "passed": true
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": -1,
+        "expected": -1,
+        "passed": true
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:52:58.869898",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Docstring + signature",
+    "scaffold": "Step-by-step",
+    "verbosity": "Verbose",
+    "output": "Code only",
+    "passed": true,
+    "error": "",
+    "raw_code": "def coin_change(coins: list[int], amount: int) -> int:\n    # Initialize a DP array where dp[i] represents the minimum number of coins required to make up the amount i\n    dp = [float('inf')] * (amount + 1)\n    \n    # Base case: if amount is 0, it means no coins are needed to make up the amount\n    dp[0] = 0\n    \n    # Fill the DP array\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            dp[i] = min(dp[i], dp[i - coin] + 1)\n    \n    return dp[amount] if dp[amount] != float('inf') else -1\n\n# Example usage:\nprint(coin_change([1, 2, 5], 11))  # Output: 3\nprint(coin_change([2], 3))        # Output: -1\nprint(coin_change([1], 0))         # Output: 0",
+    "code": "def coin_change(coins: list[int], amount: int) -> int:\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            dp[i] = min(dp[i], dp[i - coin] + 1)\n    return dp[amount] if dp[amount] != float('inf') else -1",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 3,
+        "expected": 3,
+        "passed": true
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": -1,
+        "expected": -1,
+        "passed": true
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:53:13.290526",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Docstring + signature",
+    "scaffold": "Step-by-step",
+    "verbosity": "Verbose",
+    "output": "Code + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "from typing import List\n\ndef coin_change(coins: List[int], amount: int) -> int:\n    # Initialize the DP array with infinity, except dp[0] = 0 for any amount\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    \n    # Iterate through each coin denomination\n    for coin in coins:\n        # Update dp for each possible sum that can be achieved with the current coin\n        for i in range(amount, -1, -1):\n            if coin <= i:\n                dp[i] = min(dp[i], 1 + dp[i - coin])\n    \n    return dp[amount] if dp[amount] != float('inf') else -1\n\n# Example usage:\nprint(coin_change([1, 2, 5], 11))  # Output: 3\nprint(coin_change([2], 3))        # Output: -1\nprint(coin_change([1], 0))        # Output: 0",
+    "code": "def coin_change(coins: List[int], amount: int) -> int:\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for coin in coins:\n        for i in range(amount, -1, -1):\n            if coin <= i:\n                dp[i] = min(dp[i], 1 + dp[i - coin])\n    return dp[amount] if dp[amount] != float('inf') else -1",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": -1,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": -1,
+        "expected": -1,
+        "passed": true
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:53:25.974378",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Docstring + signature",
+    "scaffold": "Step-by-step",
+    "verbosity": "Verbose",
+    "output": "Code + tests + explanation",
+    "passed": false,
+    "error": "name 'Solution' is not defined",
+    "raw_code": "class Solution:\n    def coinChange(self, coins: List[int], amount: int) -> int:\n        # Initialize a DP table with infinity for all amounts\n        dp = [float('inf')] * (amount + 1)\n        \n        # Base case: no coins are needed to make the amount 0\n        dp[0] = 0\n        \n        # Iterate over each coin value\n        for c in coins:\n            # Update the DP table with the minimum number of coins needed\n            for i in range(c, amount + 1):\n                if i >= c:\n                    dp[i] = min(dp[i], dp[i - c] + 1)\n        \n        # If we reach the end of the DP table without finding a valid combination, return -1\n        return dp[amount] if dp[amount] != float('inf') else -1",
+    "code": "def coin_change(self, coins: List[int], amount: int) -> int:\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for c in coins:\n        for i in range(c, amount + 1):\n            if i >= c:\n                dp[i] = min(dp[i], dp[i - c] + 1)\n    return dp[amount] if dp[amount] != float('inf') else -1\ndef coin_change(*args, **kwargs):\n    return Solution().coin_change(*args, **kwargs)\n",
+    "test_results": []
+  },
+  {
+    "timestamp": "2025-09-28T20:53:37.827484",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Docstring + signature",
+    "scaffold": "Self-checking",
+    "verbosity": "Minimal",
+    "output": "Code only",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins: list[int], amount: int) -> int:\n    # Initialize DP table\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n\n    # Iterate through possible combinations of coins\n    for i in range(1, amount + 1):\n        # Try different combinations of coins with decreasing values\n        for j in range(len(coins)):\n            if coins[j] <= i:\n                dp[i] = min(dp[i], dp[i - coins[j]] + 1)\n\n    return dp[amount]\n\n# Example usage:\ncoins = [3, 4, 5]\namount = 9\nprint(coin_change(coins, amount))  # Output: 3 (3 coins needed to make up 9)",
+    "code": "def coin_change(coins: list[int], amount: int) -> int:\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for i in range(1, amount + 1):\n        for j in range(len(coins)):\n            if coins[j] <= i:\n                dp[i] = min(dp[i], dp[i - coins[j]] + 1)\n    return dp[amount]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 3,
+        "expected": 3,
+        "passed": true
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": Infinity,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:53:48.915705",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Docstring + signature",
+    "scaffold": "Self-checking",
+    "verbosity": "Minimal",
+    "output": "Code + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins: list[int], amount: int) -> int:\n    # Sort the coins in ascending order\n    sorted_coins = sorted(coins)\n    \n    min_coins = 0\n    \n    # Iterate through each possible coin value\n    for coin_value in sorted_coins:\n        # While the amount is greater than or equal to the current coin value, subtract the coin value from the amount\n        while amount >= coin_value:\n            # Increase the number of coins needed by 1\n            min_coins += 1\n            # Subtract the current coin value from the total amount\n            amount -= coin_value\n    \n    return min_coins\n\n# Example usage:\nprint(coin_change([1, 2, 5], 10))  # Output: 3\nprint(coin_change([2, 3, 4], 7))  # Output: -1",
+    "code": "def coin_change(coins: list[int], amount: int) -> int:\n    sorted_coins = sorted(coins)\n    min_coins = 0\n    for coin_value in sorted_coins:\n        while amount >= coin_value:\n            min_coins += 1\n            amount -= coin_value\n    return min_coins",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 11,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": 1,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:53:57.234898",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Docstring + signature",
+    "scaffold": "Self-checking",
+    "verbosity": "Minimal",
+    "output": "Code + tests + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins: list[int], amount: int) -> int:\n    if amount == 0:\n        return 0\n\n    # Initialize the DP table with infinity\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            # Include the current coin and subtract its value from the amount\n            if i - coin >= 0:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n\n    return dp[amount]\n\n# Test cases\nprint(coin_change([2, 3, 4, 5], 9))  # Output: 3\nprint(coin_change([1, 2, 5], 7))   # Output: 2\nprint(coin_change([2], 10))    # Output: -1",
+    "code": "def coin_change(coins: list[int], amount: int) -> int:\n    if amount == 0:\n        return 0\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            if i - coin >= 0:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    return dp[amount]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 3,
+        "expected": 3,
+        "passed": true
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": Infinity,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:54:09.041725",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Docstring + signature",
+    "scaffold": "Self-checking",
+    "verbosity": "Medium",
+    "output": "Code only",
+    "passed": false,
+    "error": "",
+    "raw_code": "from typing import List\n\ndef coin_change(coins: List[int], amount: int) -> int:\n    \"\"\"\n    You are given an integer array coins representing coins of different denominations and an integer amount representing a total amount of money.\n    Return the fewest number of coins that you need to make up that amount. If that amount of money cannot be made up by any combination of the coins, return -1.\n\n    >>> coin_change([1, 2, 5], 11)\n    3\n    >>> coin_change([1, 2, 5], 22)\n    6\n    \"\"\"\n    # Sort the list to facilitate the binary search approach\n    coins.sort()\n    \n    # Initialize a dictionary to store the minimum number of coins needed for each amount\n    min_coins = {0: 0}\n    \n    # Iterate through each coin in descending order\n    for coin in sorted(coins):\n        # Update the minimum coins needed for the current amount by finding the ceiling of the division\n        min_coins[amount - coin] = min(min_coins.get(amount - coin, float('inf')), min_coins.get(amount - coin + coin, 1) + 1)\n    \n    return min_coins.get(amount, -1)\n\n# Check function to verify the correctness of the solution\ndef check_solution():\n    assert coin_change([1, 2, 5], 11) == 3\n    assert coin_change([1, 2, 5], 22) == 6\n    assert coin_change([1, 4, 7, 10], 19) == 5\n    assert coin_change([1], 1) == 1\n    assert coin_change([3, 4, 5, 7], 13) == 2\n\ncheck_solution()",
+    "code": "def coin_change(coins: List[int], amount: int) -> int:\n    \"\"\"\n    You are given an integer array coins representing coins of different denominations and an integer amount representing a total amount of money.\n    Return the fewest number of coins that you need to make up that amount. If that amount of money cannot be made up by any combination of the coins, return -1.\n\n    >>> coin_change([1, 2, 5], 11)\n    3\n    >>> coin_change([1, 2, 5], 22)\n    6\n    \"\"\"\n    coins.sort()\n    min_coins = {0: 0}\n    for coin in sorted(coins):\n        min_coins[amount - coin] = min(min_coins.get(amount - coin, float('inf')), min_coins.get(amount - coin + coin, 1) + 1)\n    return min_coins.get(amount, -1)",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": -1,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": -1,
+        "expected": -1,
+        "passed": true
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:54:16.366053",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Docstring + signature",
+    "scaffold": "Self-checking",
+    "verbosity": "Medium",
+    "output": "Code + explanation",
+    "passed": true,
+    "error": "",
+    "raw_code": "def coin_change(coins: list[int], amount: int) -> int:\n    # Initialize dp array with infinity except for dp[0], which is 0\n    dp = [float('inf')] * (amount + 1)\n    \n    # Base case: no coins needed for an empty array\n    dp[0] = 0\n    \n    # Iterate over each amount from 1 to the target amount\n    for i in range(1, amount + 1):\n        # Try each coin and update dp[i]\n        for j in range(len(coins)):\n            if coins[j] <= i:\n                dp[i] = min(dp[i], 1 + dp[i - coins[j]])\n    \n    # Return the minimum number of coins needed\n    return dp[amount] if dp[amount] != float('inf') else -1\n\n# Example usage:\nprint(coin_change([2, 3, 4], 5))  # Output: 2 (since 3 + 2 = 5)\nprint(coin_change([2, 3, 4], 7))  # Output: -1",
+    "code": "def coin_change(coins: list[int], amount: int) -> int:\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for i in range(1, amount + 1):\n        for j in range(len(coins)):\n            if coins[j] <= i:\n                dp[i] = min(dp[i], 1 + dp[i - coins[j]])\n    return dp[amount] if dp[amount] != float('inf') else -1",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 3,
+        "expected": 3,
+        "passed": true
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": -1,
+        "expected": -1,
+        "passed": true
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:54:30.887836",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Docstring + signature",
+    "scaffold": "Self-checking",
+    "verbosity": "Medium",
+    "output": "Code + tests + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins: list[int], amount: int) -> int:\n    # Sort the list of coins in descending order\n    coins.sort(reverse=True)\n    \n    count = 0\n    \n    for coin in coins:\n        # While we can make up the remaining amount with this coin, add it to the counter\n        while amount >= coin:\n            amount -= coin\n            count += 1\n    \n    return count\n\n# Test cases\nprint(coin_change([3, 2, 5], 9))  # Output: 3 (2 + 2)\nprint(coin_change([4, 6, 7], 10))  # Output: 3 (4 + 4)\nprint(coin_change([1, 2, 3], 10))  # Output: -1 (no coins available to make up 10)",
+    "code": "def coin_change(coins: list[int], amount: int) -> int:\n    coins.sort(reverse=True)\n    count = 0\n    for coin in coins:\n        while amount >= coin:\n            amount -= coin\n            count += 1\n    return count",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 3,
+        "expected": 3,
+        "passed": true
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": 1,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:54:45.794270",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Docstring + signature",
+    "scaffold": "Self-checking",
+    "verbosity": "Verbose",
+    "output": "Code only",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins: list[int], amount: int) -> int:\n    # Initialize the dp table with a value of 0 for each amount from 1 to amount\n    dp = [0] * (amount + 1)\n    \n    # Base case: no coins needed for an amount of 0\n    dp[0] = 0\n    \n    # Fill the dp table\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            if i - coin >= 0:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    \n    return dp[amount]\n\n# Example usage:\nprint(coin_change([1, 2, 5], 11))  # Output: 3\nprint(coin_change([2], 3))        # Output: -1\nprint(coin_change([1], 0))       # Output: 0",
+    "code": "def coin_change(coins: list[int], amount: int) -> int:\n    dp = [0] * (amount + 1)\n    dp[0] = 0\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            if i - coin >= 0:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    return dp[amount]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 0,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": 0,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:55:06.742363",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Docstring + signature",
+    "scaffold": "Self-checking",
+    "verbosity": "Verbose",
+    "output": "Code + tests + explanation",
+    "passed": false,
+    "error": "name 'Solution' is not defined",
+    "raw_code": "class Solution:\n    def coinChange(self, coins: List[int], amount: int) -> int:\n        # Initialize the number of coins needed for each amount up to the given amount\n        dp = [float('inf')] * (amount + 1)\n        dp[0] = 0\n        \n        # Iterate through each coin denomination\n        for i in range(len(coins)):\n            # Update the minimum number of coins needed for the current amount\n            for j in range(coins[i], amount + 1):\n                # Update the minimum number of coins needed for the current amount\n                dp[j] = min(dp[j], dp[j - coins[i]] + 1)\n        \n        # If no coins can be made up, return -1\n        return dp[-1] if dp[-1] != float('inf') else -1\n\n# Test cases\nprint(coin_change([1,2,5], 11))   # Output: 3\nprint(coin_change([2], 3))     # Output: -1\nprint(coin_change([1], 0))      # Output: 0",
+    "code": "def coin_change(self, coins: List[int], amount: int) -> int:\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for i in range(len(coins)):\n        for j in range(coins[i], amount + 1):\n            dp[j] = min(dp[j], dp[j - coins[i]] + 1)\n    return dp[-1] if dp[-1] != float('inf') else -1\ndef coin_change(*args, **kwargs):\n    return Solution().coin_change(*args, **kwargs)\n",
+    "test_results": []
+  },
+  {
+    "timestamp": "2025-09-28T20:55:16.642374",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Test-driven",
+    "scaffold": "Direct",
+    "verbosity": "Minimal",
+    "output": "Code only",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins, amount):\n    \"\"\"\n    Calculate the minimum number of coins needed to make up a given amount.\n\n    :param coins: List[int] - A list of integers representing the denominations.\n    :param amount: int - The target amount to make change for.\n    :return: int - The minimum number of coins required.\n    \"\"\"\n    # Sort the coins in descending order\n    coins.sort(reverse=True)\n    total = 0\n    \n    # Iterate through each coin value\n    for coin in coins:\n        while amount >= coin:\n            # If enough money, add the coin to the total and subtract it from the amount\n            total += coin\n            amount -= coin\n    return total\n\n# Test cases\nassert coin_change([1, 2, 5], 11) == 3\nassert coin_change([2], 3) == -1\nassert coin_change([1], 0) == 0",
+    "code": "def coin_change(coins, amount):\n    \"\"\"\n    Calculate the minimum number of coins needed to make up a given amount.\n\n    :param coins: List[int] - A list of integers representing the denominations.\n    :param amount: int - The target amount to make change for.\n    :return: int - The minimum number of coins required.\n    \"\"\"\n    coins.sort(reverse=True)\n    total = 0\n    for coin in coins:\n        while amount >= coin:\n            total += coin\n            amount -= coin\n    return total",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 11,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": 2,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:55:20.326634",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Test-driven",
+    "scaffold": "Direct",
+    "verbosity": "Minimal",
+    "output": "Code + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "# Importing the necessary function from the math module to calculate factorial\nfrom math import factorial\n\ndef coin_change(coins, amount):\n    \"\"\"\n    Calculates the number of ways to make change for a given amount using a list of coins.\n    \n    Parameters:\n    coins (list): List of integers representing the denominations of each type of coin available.\n    amount (int): The total amount of money you need to make change for.\n    \n    Returns:\n    int: The number of ways to make change for the given amount using the specified coins.\n    \n    Examples:\n    >>> coin_change([1, 2, 5], 11)\n    3\n    >>> coin_change([2], 3)\n    -1\n    >>> coin_change([1], 0)\n    0\n    \"\"\"\n    # Initialize a counter for the number of ways to make change\n    count = 0\n    \n    # Iterate over each coin in the list\n    for coin in coins:\n        # Calculate how many times the current coin can be used to make up the remaining amount\n        if amount % coin == 0:\n            # If it is possible, add the number of ways to make change using that coin plus one (for the next combination)\n            count += amount // coin\n    \n    return count\n\n# Function to check the correctness of the solution with provided data points\ndef check():\n    assert coin_change([1, 2, 5], 11) == 3, \"Test case 1 failed\"\n    assert coin_change([2], 3) == -1, \"Test case 2 failed\"\n    assert coin_change([1], 0) == 0, \"Test case 3 failed\"\n    print(\"All test cases passed!\")\n\n# Running the check function to verify the solution\ncheck()",
+    "code": "def coin_change(coins, amount):\n    \"\"\"\n    Calculates the number of ways to make change for a given amount using a list of coins.\n    \n    Parameters:\n    coins (list): List of integers representing the denominations of each type of coin available.\n    amount (int): The total amount of money you need to make change for.\n    \n    Returns:\n    int: The number of ways to make change for the given amount using the specified coins.\n    \n    Examples:\n    >>> coin_change([1, 2, 5], 11)\n    3\n    >>> coin_change([2], 3)\n    -1\n    >>> coin_change([1], 0)\n    0\n    \"\"\"\n    count = 0\n    for coin in coins:\n        if amount % coin == 0:\n            count += amount // coin\n    return count",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 11,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": 0,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:55:29.206429",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Test-driven",
+    "scaffold": "Direct",
+    "verbosity": "Minimal",
+    "output": "Code + tests + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins, amount):\n    \"\"\"\n    This function calculates the fewest number of coins needed to make up a given amount.\n    \n    Args:\n    coins: A list of integers representing the denominations of the coins available.\n    amount: An integer representing the total amount of money needed to be made up.\n    \n    Returns:\n    The minimum number of coins required to make up the given amount.\n    \"\"\"\n    # Sort the list of coins in descending order\n    coins.sort(reverse=True)\n    change = 0\n    \n    # Iterate through each coin in the sorted list\n    for coin in coins:\n        # While the current amount is greater than or equal to the coin value,\n        while amount >= coin:\n            # Add the coin value to the total number of changes needed\n            change += coin\n            # Subtract the coin value from the amount\n            amount -= coin\n    \n    return change\n\n# Test cases to verify the correctness of the function\nassert coin_change([1, 2, 5], 11) == 3\nassert coin_change([2], 3) == -1\nassert coin_change([1], 0) == 0",
+    "code": "def coin_change(coins, amount):\n    \"\"\"\n    This function calculates the fewest number of coins needed to make up a given amount.\n    \n    Args:\n    coins: A list of integers representing the denominations of the coins available.\n    amount: An integer representing the total amount of money needed to be made up.\n    \n    Returns:\n    The minimum number of coins required to make up the given amount.\n    \"\"\"\n    coins.sort(reverse=True)\n    change = 0\n    for coin in coins:\n        while amount >= coin:\n            change += coin\n            amount -= coin\n    return change",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 11,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": 2,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:55:35.907378",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Test-driven",
+    "scaffold": "Direct",
+    "verbosity": "Medium",
+    "output": "Code only",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins, amount):\n    # Initialize the count of ways to make the amount using each coin\n    n = len(coins)\n    dp = [0] * (amount + 1)\n    \n    # Base cases: no coins or amount is zero\n    for i in range(1, amount + 1):\n        if i < coins[0]:\n            dp[i] = float('inf')\n        else:\n            dp[i] = dp[i - coins[0]] + 1\n    \n    return dp[-1]",
+    "code": "def coin_change(coins, amount):\n    n = len(coins)\n    dp = [0] * (amount + 1)\n    for i in range(1, amount + 1):\n        if i < coins[0]:\n            dp[i] = float('inf')\n        else:\n            dp[i] = dp[i - coins[0]] + 1\n    return dp[-1]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 11,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": Infinity,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:55:38.014670",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Test-driven",
+    "scaffold": "Direct",
+    "verbosity": "Medium",
+    "output": "Code + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins: list[int], amount: int) -> int:\n    # Initialize the maximum value for the result and set it to the minimum possible value\n    max_value = amount + 1\n    # Iterate through each coin in the list\n    for coin in coins:\n        # If the coin is less than or equal to the current amount, subtract the coin from the amount\n        while amount >= coin:\n            amount -= coin\n            # Increment the count of coins needed\n            max_value += 1\n    return max_value",
+    "code": "def coin_change(coins: list[int], amount: int) -> int:\n    max_value = amount + 1\n    for coin in coins:\n        while amount >= coin:\n            amount -= coin\n            max_value += 1\n    return max_value",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 23,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": 5,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 1,
+        "expected": 0,
+        "passed": false
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:55:50.758624",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Test-driven",
+    "scaffold": "Direct",
+    "verbosity": "Verbose",
+    "output": "Code only",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins, amount):\n    min_coins = amount + 1  # Initialize the minimum number of coins needed for amount + 1\n    dp = [min_coins] * (amount + 1)  # Create a list to store the minimum number of coins needed for each amount from 0 to amount\n\n    for coin in coins:\n        # Update dp array based on current coin value and its cost\n        for x in range(coin, amount + 1):\n            if dp[x - coin] == min_coins:  # If we can make the current amount with the current coin\n                dp[x] = min(dp[x], dp[x - coin] + 1)  # Update dp array with the minimum number of coins\n\n    return dp[amount]",
+    "code": "def coin_change(coins, amount):\n    min_coins = amount + 1\n    dp = [min_coins] * (amount + 1)\n    for coin in coins:\n        for x in range(coin, amount + 1):\n            if dp[x - coin] == min_coins:\n                dp[x] = min(dp[x], dp[x - coin] + 1)\n    return dp[amount]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 12,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": 4,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 1,
+        "expected": 0,
+        "passed": false
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:55:54.088635",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Test-driven",
+    "scaffold": "Direct",
+    "verbosity": "Verbose",
+    "output": "Code + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins, amount):\n    # Initialize a 2D array to store the count of ways to achieve each amount\n    dp = [[0] * (amount + 1) for _ in range(len(coins) + 1)]\n    \n    # Base case: there's one way to make zero by using no coins (empty set)\n    for i in range(1, len(dp)):\n        dp[i][0] = 1\n    \n    # Fill the DP table\n    for coin in range(1, len(coins) + 1):\n        for amount in range(1, amount + 1):\n            if amount >= coins[coin - 1]:\n                dp[coin][amount] = dp[coin-1][amount-coins[coin-1]] + dp[coin][amount]\n    \n    return dp[len(coins)][amount]\n\n# Test cases\nassert coin_change([1,2,5], 11) == 3\nassert coin_change([2], 3) == -1\nassert coin_change([1], 0) == 0",
+    "code": "def coin_change(coins, amount):\n    dp = [[0] * (amount + 1) for _ in range(len(coins) + 1)]\n    for i in range(1, len(dp)):\n        dp[i][0] = 1\n    for coin in range(1, len(coins) + 1):\n        for amount in range(1, amount + 1):\n            if amount >= coins[coin - 1]:\n                dp[coin][amount] = dp[coin - 1][amount - coins[coin - 1]] + dp[coin][amount]\n    return dp[len(coins)][amount]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 0,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": 0,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 1,
+        "expected": 0,
+        "passed": false
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:56:03.808437",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Test-driven",
+    "scaffold": "Direct",
+    "verbosity": "Verbose",
+    "output": "Code + tests + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins, amount):\n    \"\"\"\n    This function calculates the minimum number of coins needed to make up an amount.\n    \n    Args:\n    - coins: List[int] representing the available coin denominations.\n    - amount: int, the total amount to be changed.\n    \n    Returns:\n    - int, the minimum number of coins required.\n    \"\"\"\n    # If the amount is zero, there are no coins needed\n    if amount == 0:\n        return 0\n    \n    # Initialize the dp array where dp[i] represents the minimum number of coins for i\n    dp = [float('inf')] * (amount + 1)\n    \n    # Base case: 0 coins required for an amount of 0\n    dp[0] = 0\n    \n    # Fill the dp table iteratively\n    for coin in coins:\n        for amount in range(coin, amount + 1):\n            # If the current amount can be made with the current coin, add one to the previous answer\n            if amount >= coin:\n                dp[amount] = min(dp[amount], dp[amount - coin] + 1)\n    \n    return dp[-1]\n\n# Test cases\nassert coin_change([1, 2, 5], 11) == 3\nassert coin_change([2], 3) == -1\nassert coin_change([1], 0) == 0\n\nprint(\"All tests passed successfully.\")",
+    "code": "def coin_change(coins, amount):\n    \"\"\"\n    This function calculates the minimum number of coins needed to make up an amount.\n    \n    Args:\n    - coins: List[int] representing the available coin denominations.\n    - amount: int, the total amount to be changed.\n    \n    Returns:\n    - int, the minimum number of coins required.\n    \"\"\"\n    if amount == 0:\n        return 0\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for coin in coins:\n        for amount in range(coin, amount + 1):\n            if amount >= coin:\n                dp[amount] = min(dp[amount], dp[amount - coin] + 1)\n    return dp[-1]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 3,
+        "expected": 3,
+        "passed": true
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": Infinity,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:56:15.430677",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Test-driven",
+    "scaffold": "Step-by-step",
+    "verbosity": "Minimal",
+    "output": "Code only",
+    "passed": false,
+    "error": "",
+    "raw_code": "# Define the function to calculate the minimum number of coins needed to make a given amount\ndef coin_change(coins, amount):\n    # Initialize a counter for the number of coins used\n    count = 0\n    \n    # Iterate through each coin in the list\n    for i in range(len(coins)):\n        # If the current coin value is less than or equal to the amount, add it to the counter and subtract the coin value from the amount\n        while i < len(coins) and amount >= coins[i]:\n            count += 1\n            amount -= coins[i]\n    \n    return count\n\n# Test cases to verify the correctness of the function\nassert coin_change([1, 2, 5], 11) == 3\nassert coin_change([2], 3) == -1\nassert coin_change([1], 0) == 0",
+    "code": "def coin_change(coins, amount):\n    count = 0\n    for i in range(len(coins)):\n        while i < len(coins) and amount >= coins[i]:\n            count += 1\n            amount -= coins[i]\n    return count",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 11,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": 1,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:56:18.957662",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Test-driven",
+    "scaffold": "Step-by-step",
+    "verbosity": "Minimal",
+    "output": "Code + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "# Importing the necessary library\nfrom typing import List\n\ndef coin_change(coins: List[int], amount: int) -> int:\n    \"\"\"\n    This function calculates the minimum number of coins required to make up the given amount.\n    \n    Parameters:\n    coins (List[int]): A list of positive integers representing the denominations of each type of coin.\n    amount (int): The target amount to change with the given coins.\n    \n    Returns:\n    int: The minimum number of coins needed to make up the given amount. If not possible, returns -1.\n    \n    Examples:\n    >>> coin_change([1,2,5], 11)\n    3\n    >>> coin_change([2], 3)\n    -1\n    >>> coin_change([1], 0)\n    0\n    \"\"\"\n    # Initialize the list of minimum coins needed for each amount from 0 to amount\n    dp = [float('inf')] * (amount + 1)\n    \n    # Base case: there's one way to make up 0, which is not using any coins\n    dp[0] = 0\n    \n    # Fill the dp list based on the given coins and their values\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            if i >= coin:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    \n    return dp[amount]\n\n# Check function with provided data points\nassert coin_change([1, 2, 5], 11) == 3\nassert coin_change([2], 3) == -1\nassert coin_change([1], 0) == 0",
+    "code": "def coin_change(coins: List[int], amount: int) -> int:\n    \"\"\"\n    This function calculates the minimum number of coins required to make up the given amount.\n    \n    Parameters:\n    coins (List[int]): A list of positive integers representing the denominations of each type of coin.\n    amount (int): The target amount to change with the given coins.\n    \n    Returns:\n    int: The minimum number of coins needed to make up the given amount. If not possible, returns -1.\n    \n    Examples:\n    >>> coin_change([1,2,5], 11)\n    3\n    >>> coin_change([2], 3)\n    -1\n    >>> coin_change([1], 0)\n    0\n    \"\"\"\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            if i >= coin:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    return dp[amount]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 3,
+        "expected": 3,
+        "passed": true
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": Infinity,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:56:31.635639",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Test-driven",
+    "scaffold": "Step-by-step",
+    "verbosity": "Minimal",
+    "output": "Code + tests + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins, amount):\n    # Initialize a DP array where dp[i] represents the number of ways to make change with up to i coins\n    dp = [0] * (amount + 1)\n    \n    # Base cases: no coins or amount is zero\n    for i in range(amount + 1):\n        if i == 0:\n            dp[i] = 0\n        elif i == 1:\n            dp[i] = 1\n    \n    # Fill the DP table\n    for coin in coins:\n        for j in range(coin, amount + 1):\n            dp[j] += dp[j - coin]\n    \n    return dp[amount]\n\n# Test cases to verify the correctness of the function\nassert coin_change([1,2,5], 11) == 3\nassert coin_change([2], 3) == -1\nassert coin_change([1], 0) == 0",
+    "code": "def coin_change(coins, amount):\n    dp = [0] * (amount + 1)\n    for i in range(amount + 1):\n        if i == 0:\n            dp[i] = 0\n        elif i == 1:\n            dp[i] = 1\n    for coin in coins:\n        for j in range(coin, amount + 1):\n            dp[j] += dp[j - coin]\n    return dp[amount]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 10,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": 1,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:56:41.397780",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Test-driven",
+    "scaffold": "Step-by-step",
+    "verbosity": "Medium",
+    "output": "Code only",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins: list[int], amount: int) -> int:\n    # Initialize an array to store the minimum number of ways to make each amount\n    dp = [0] * (amount + 1)\n    \n    # Base case: if the amount is 0, there's one way to make it (using no coins)\n    dp[0] = 1\n    \n    # Iterate through each coin in the list\n    for coin in coins:\n        # Update dp array by considering all possible ways to make the current amount with the current coin\n        for i in range(coin, amount + 1):\n            dp[i] += dp[i - coin]\n    \n    return dp[amount]\n\n# Test cases\nassert coin_change([1,2,5], 11) == 3\nassert coin_change([2], 3) == -1\nassert coin_change([1], 0) == 0",
+    "code": "def coin_change(coins: list[int], amount: int) -> int:\n    dp = [0] * (amount + 1)\n    dp[0] = 1\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            dp[i] += dp[i - coin]\n    return dp[amount]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 11,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": 0,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 1,
+        "expected": 0,
+        "passed": false
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:56:50.097420",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Test-driven",
+    "scaffold": "Step-by-step",
+    "verbosity": "Medium",
+    "output": "Code + explanation",
+    "passed": false,
+    "error": "list index out of range",
+    "raw_code": "def coin_change(coins: list[int], amount: int) -> int:\n    # Create a DP table where dp[i][j] represents the number of ways to make i cents using exactly j coins\n    dp = [[0 for _ in range(amount + 1)] for _ in range(len(coins) + 1)]\n    \n    # Base cases\n    dp[0][0] = 1  # There's one way to make 0 cents with no coins (using an empty set of coins)\n    \n    # Fill the DP table\n    for i in range(1, amount + 1):\n        for j in range(len(coins)):\n            if i >= coins[j]:\n                dp[i][j] = dp[i - coins[j]][j]\n            else:\n                dp[i][j] = dp[i][j - 1]\n    \n    return dp[amount][0]\n\n# Test cases\nassert coin_change([1,2,5], 11) == 3\nassert coin_change([2], 3) == -1\nassert coin_change([1], 0) == 0",
+    "code": "def coin_change(coins: list[int], amount: int) -> int:\n    dp = [[0 for _ in range(amount + 1)] for _ in range(len(coins) + 1)]\n    dp[0][0] = 1\n    for i in range(1, amount + 1):\n        for j in range(len(coins)):\n            if i >= coins[j]:\n                dp[i][j] = dp[i - coins[j]][j]\n            else:\n                dp[i][j] = dp[i][j - 1]\n    return dp[amount][0]",
+    "test_results": []
+  },
+  {
+    "timestamp": "2025-09-28T20:57:04.686806",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Test-driven",
+    "scaffold": "Step-by-step",
+    "verbosity": "Medium",
+    "output": "Code + tests + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins: list[int], amount: int) -> int:\n    # Initialize a counter to keep track of the number of ways to make up the amount\n    count = 0\n    \n    # Iterate through each coin in the list\n    for coin in coins:\n        # Check if the current coin is less than or equal to the amount\n        if amount >= coin:\n            # If yes, add 1 to the counter\n            count += 1\n    \n    return count",
+    "code": "def coin_change(coins: list[int], amount: int) -> int:\n    count = 0\n    for coin in coins:\n        if amount >= coin:\n            count += 1\n    return count",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 3,
+        "expected": 3,
+        "passed": true
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": 1,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:57:11.918698",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Test-driven",
+    "scaffold": "Step-by-step",
+    "verbosity": "Verbose",
+    "output": "Code only",
+    "passed": false,
+    "error": "list assignment index out of range",
+    "raw_code": "def coin_change(coins, amount):\n    # Initialize a list to store the minimum number of ways to make each amount\n    dp = [float('inf')] * (amount + 1)\n    \n    # Base cases: no coins or amount 0, set to 0 ways\n    for i in range(len(coins)):\n        dp[coins[i]] = 0\n    \n    # Fill the dp table\n    for i in range(1, amount + 1):\n        for coin in coins:\n            if i >= coin:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    \n    return dp[amount]\n\n# Test cases\nassert coin_change([1, 2, 5], 11) == 3\nassert coin_change([2], 3) == -1\nassert coin_change([1], 0) == 0",
+    "code": "def coin_change(coins, amount):\n    dp = [float('inf')] * (amount + 1)\n    for i in range(len(coins)):\n        dp[coins[i]] = 0\n    for i in range(1, amount + 1):\n        for coin in coins:\n            if i >= coin:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    return dp[amount]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 2,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": Infinity,
+        "expected": -1,
+        "passed": false
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:57:20.990680",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Test-driven",
+    "scaffold": "Step-by-step",
+    "verbosity": "Verbose",
+    "output": "Code + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins, amount):\n    if amount == 0:\n        return 0  # If the amount is 0, return 0 as there are no coins to change into.\n    \n    min_coins = float('inf')  # Initialize min_coins to infinity (assuming we need to find a solution).\n    for coin in coins:  # Iterate through each coin in the list.\n        if amount >= coin:\n            new_amount = amount - coin  # Calculate the remaining amount after using the current coin.\n            res = coin_change(coins, new_amount)  # Recursively calculate the number of ways to make the remaining amount using the updated coins.\n            min_coins = min(min_coins, 1 + res)  # Update min_coins with the minimum of current solution plus one way to make the remaining amount using this coin.\n    \n    return min_coins  # Return the minimum number of ways to make the amount by choosing the first coin in the list.\n\n# Test cases\nassert coin_change([1,2,5], 11) == 3  # This is because we can use one $1 and two $5 coins to make the total amount 11.\nassert coin_change([2], 3) == -1  # There are no coins to change into 3 dollars.\nassert coin_change([1], 0) == 0  # We need at least 1 dollar to make any change.",
+    "code": "def coin_change(coins, amount):\n    if amount == 0:\n        return 0\n    min_coins = float('inf')\n    for coin in coins:\n        if amount >= coin:\n            new_amount = amount - coin\n            res = coin_change(coins, new_amount)\n            min_coins = min(min_coins, 1 + res)\n    return min_coins",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 3,
+        "expected": 3,
+        "passed": true
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": Infinity,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:57:30.408617",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Test-driven",
+    "scaffold": "Step-by-step",
+    "verbosity": "Verbose",
+    "output": "Code + tests + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins, amount):\n    # Initialize variables\n    count = 1  # Start with one way to make up the amount (using no coins)\n    coins.sort()  # Sort the list of coins in ascending order for efficient coin selection\n    \n    # Recursive function to find number of ways to change remaining amount using current coins\n    def find_ways(amount):\n        if amount == 0:\n            return 1  # We have successfully changed all the coins, so return 1\n        \n        total_ways = 0\n        for coin in coins:\n            if amount >= coin:\n                total_ways += find_ways(amount - coin)\n        \n        return total_ways\n    \n    # Return the result\n    return find_ways(amount)\n\n# Test cases\nassert coin_change([1, 2, 5], 11) == 3\nassert coin_change([2], 3) == -1\nassert coin_change([1], 0) == 0\n\nprint(\"All test cases passed.\")",
+    "code": "def coin_change(coins, amount):\n    count = 1\n    coins.sort()\n\n    def find_ways(amount):\n        if amount == 0:\n            return 1\n        total_ways = 0\n        for coin in coins:\n            if amount >= coin:\n                total_ways += find_ways(amount - coin)\n        return total_ways\n    return find_ways(amount)",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 218,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": 0,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 1,
+        "expected": 0,
+        "passed": false
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:57:43.180849",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Test-driven",
+    "scaffold": "Self-checking",
+    "verbosity": "Minimal",
+    "output": "Code only",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins, amount):\n    # Initialize the number of ways to make change with 0\n    dp = [0] * (amount + 1)\n    \n    # If we want to use the smallest coins possible\n    dp[0] = 1\n    \n    for coin in coins:\n        # Calculate how many ways we can get that amount using the current coin\n        for i in range(coin, amount + 1):\n            if i >= coin:\n                dp[i] += dp[i - coin]\n    \n    return dp[-1]",
+    "code": "def coin_change(coins, amount):\n    dp = [0] * (amount + 1)\n    dp[0] = 1\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            if i >= coin:\n                dp[i] += dp[i - coin]\n    return dp[-1]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 11,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": 0,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 1,
+        "expected": 0,
+        "passed": false
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:57:53.887525",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Test-driven",
+    "scaffold": "Self-checking",
+    "verbosity": "Minimal",
+    "output": "Code + tests + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(denominations, amount):\n    # Initialize result with the maximum possible value for the amount\n    result = float('inf')\n    \n    # Iterate through each denomination in descending order\n    for denomination in sorted(denominations):\n        if amount >= denomination:\n            # Calculate how many coins are needed to make up the remaining amount\n            coins_needed = amount // denomination\n            # Update the result with the minimum number of coins found so far\n            result = min(result, coins_needed)\n    \n    return result\n\n# Test cases to verify the correctness of the function\nassert coin_change([1, 2, 5], 11) == 3\nassert coin_change([2], 3) == -1\nassert coin_change([1], 0) == 0",
+    "code": "def coin_change(denominations, amount):\n    result = float('inf')\n    for denomination in sorted(denominations):\n        if amount >= denomination:\n            coins_needed = amount // denomination\n            result = min(result, coins_needed)\n    return result",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 2,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": 1,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": Infinity,
+        "expected": 0,
+        "passed": false
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:58:01.706046",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Test-driven",
+    "scaffold": "Self-checking",
+    "verbosity": "Medium",
+    "output": "Code only",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins: list[int], amount: int) -> int:\n    # Initialize a counter for the number of ways to make the amount\n    count = 0\n    \n    # Iterate through each coin in the coins list\n    for i in range(1, amount + 1):\n        # If the current amount is divisible by the current coin, increment the counter\n        if amount % i == 0:\n            count += 1\n    \n    return count\n\n# Test cases to verify the correctness of the function\nassert coin_change([1,2,5], 11) == 3\nassert coin_change([2], 3) == -1\nassert coin_change([1], 0) == 0",
+    "code": "def coin_change(coins: list[int], amount: int) -> int:\n    count = 0\n    for i in range(1, amount + 1):\n        if amount % i == 0:\n            count += 1\n    return count",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 2,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": 2,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T20:58:21.134751",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Test-driven",
+    "scaffold": "Self-checking",
+    "verbosity": "Medium",
+    "output": "Code + tests + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins, amount):\n    # If the amount is 0, no coins are needed\n    if amount == 0:\n        return 1\n    \n    dp = [0] * (amount + 1)\n    \n    for i in range(1, amount + 1):\n        # Try using each coin as a possible change\n        for coin in coins:\n            if i >= coin:\n                dp[i] += dp[i - coin]\n    \n    return dp[amount]\n\n# Test cases to verify the correctness of the function\nassert coin_change([1,2,5], 11) == 3\nassert coin_change([2], 3) == -1\nassert coin_change([1], 0) == 0",
+    "code": "def coin_change(coins, amount):\n    if amount == 0:\n        return 1\n    dp = [0] * (amount + 1)\n    for i in range(1, amount + 1):\n        for coin in coins:\n            if i >= coin:\n                dp[i] += dp[i - coin]\n    return dp[amount]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 0,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": 0,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 1,
+        "expected": 0,
+        "passed": false
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T21:14:27.086883",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Test-driven",
+    "scaffold": "Self-checking",
+    "verbosity": "Verbose",
+    "output": "Code only",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins, amount):\n    # Initialize a list to keep track of the minimum number of coins needed for each amount\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0  # Base case: no coins need to make up amount 0\n\n    # Iterate through each coin in the list\n    for coin in coins:\n        # Update the dp array based on whether the current coin can be included\n        for i in range(coin, amount + 1):\n            if i >= coin:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n\n    return dp[amount]",
+    "code": "def coin_change(coins, amount):\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            if i >= coin:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    return dp[amount]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 3,
+        "expected": 3,
+        "passed": true
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": Infinity,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 0,
+        "expected": 0,
+        "passed": true
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T21:14:33.117358",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Test-driven",
+    "scaffold": "Self-checking",
+    "verbosity": "Verbose",
+    "output": "Code + explanation",
+    "passed": false,
+    "error": "",
+    "raw_code": "def coin_change(coins, amount):\n    # Initialize a list to store the number of ways to make each amount\n    dp = [0] * (amount + 1)\n    \n    # Base case: there is one way to make zero cents using no coins\n    dp[0] = 1\n    \n    # Fill in the dp table using dynamic programming\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            dp[i] += dp[i - coin]\n    \n    return dp[amount]\n\n# Test cases to verify the correctness of the function\nassert coin_change([1,2,5], 11) == 3\nassert coin_change([2], 3) == -1\nassert coin_change([1], 0) == 0",
+    "code": "def coin_change(coins, amount):\n    dp = [0] * (amount + 1)\n    dp[0] = 1\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            dp[i] += dp[i - coin]\n    return dp[amount]",
+    "test_results": [
+      {
+        "test": "coin_change([1, 2, 5], 11) == 3",
+        "actual": 11,
+        "expected": 3,
+        "passed": false
+      },
+      {
+        "test": "coin_change([2], 3) == -1",
+        "actual": 0,
+        "expected": -1,
+        "passed": false
+      },
+      {
+        "test": "coin_change([1], 0) == 0",
+        "actual": 1,
+        "expected": 0,
+        "passed": false
+      }
+    ]
+  },
+  {
+    "timestamp": "2025-09-28T21:14:59.841854",
+    "problem": "Medium \u2013 Coin Change",
+    "framing": "Test-driven",
+    "scaffold": "Self-checking",
+    "verbosity": "Verbose",
+    "output": "Code + tests + explanation",
+    "passed": false,
+    "error": "list index out of range",
+    "raw_code": "def coin_change(coins: List[int], amount: int) -> int:\n    # Create a 2D array to store the number of ways to make different amounts\n    dp = [[0] * (amount + 1) for _ in range(len(coins))]\n    \n    # If the amount is less than 0, it's impossible to make it, so return -1\n    if amount < 0:\n        return -1\n    \n    # The base case: there's one way to make 0 using no coins\n    dp[0][0] = 1\n    \n    # Fill the DP table\n    for i in range(1, len(coins) + 1):\n        for j in range(1, amount + 1):\n            if coins[i - 1] <= j:\n                dp[i][j] += dp[i - 1][j - coins[i - 1]]\n    \n    return dp[len(coins)][amount]\n\n# Test cases\nassert coin_change([1,2,5], 11) == 3\nassert coin_change([2], 3) == -1\nassert coin_change([1], 0) == 0",
+    "code": "def coin_change(coins: List[int], amount: int) -> int:\n    dp = [[0] * (amount + 1) for _ in range(len(coins))]\n    if amount < 0:\n        return -1\n    dp[0][0] = 1\n    for i in range(1, len(coins) + 1):\n        for j in range(1, amount + 1):\n            if coins[i - 1] <= j:\n                dp[i][j] += dp[i - 1][j - coins[i - 1]]\n    return dp[len(coins)][amount]",
+    "test_results": []
+  }
+]
