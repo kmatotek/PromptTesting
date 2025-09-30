@@ -1,5 +1,3 @@
-# utilities.py
-
 import ollama
 import re
 import multiprocessing

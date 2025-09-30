@@ -257,6 +257,7 @@ def generate_prompts(problem):
 # 5. Run experiment
 # =====================
 def run_experiment(difficulties=None, reset=False):
+    #model = "qwen2.5-coder:0.5b"
     model = "deepseek-coder:1.3b"
     files = init_results(reset=reset)
 
