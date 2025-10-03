@@ -4,7 +4,7 @@ import os
 from datetime import datetime
 from itertools import product
 import ast
-from ast import unparse  # Use astunparse.unparse if Python < 3.9
+from ast import unparse 
 from utilities import api_call, get_python
 from typing import List, Optional
 import signal
@@ -26,9 +26,9 @@ signal.signal(signal.SIGALRM, timeout_handler)
 # =====================
 def init_results(reset=False):
     files = {
-        "easy": "results/results_easy_deepseek.json",
-        "medium": "results/results_medium_deepseek.json",
-        "hard": "results/results_hard_deepseek.json"
+        "easy": "./results/results_easy_test.json",
+        "medium": "./results/results_medium_test.json",
+        "hard": "./results/results_hard_test.json"
     }
     if reset:
         for f in files.values():
@@ -257,11 +257,11 @@ def generate_prompts(problem):
 # 5. Run experiment
 # =====================
 def run_experiment(difficulties=None, reset=False):
-    #model = "qwen2.5-coder:0.5b"
-    model = "deepseek-coder:1.3b"
+    model = "qwen2.5-coder:0.5b"
+    #model = "starcoder:1b"
     files = init_results(reset=reset)
 
-    for problem in problems2:
+    for problem in problems:
         difficulty = problem["name"].split("–")[0].strip().lower()
 
         if difficulties and difficulty not in difficulties:
@@ -358,4 +358,4 @@ def run_experiment(difficulties=None, reset=False):
 
 
 if __name__ == "__main__":
-    run_experiment(difficulties=["medium"], reset=False)
+    run_experiment(difficulties=["easy"], reset=False)
