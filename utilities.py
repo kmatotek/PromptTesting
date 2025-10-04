@@ -24,6 +24,8 @@ def api_call(input_text, model, client=None):
             model=model,
             messages=[{"role": "user", "content": prompt}]
         )
+    
+
     return response["message"]["content"]
 
 
