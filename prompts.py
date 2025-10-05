@@ -1,356 +1,178 @@
-import csv
 import json
 import os
 from datetime import datetime
 from itertools import product
-import ast
-from ast import unparse 
-from utilities import api_call, get_python
-from typing import List, Optional
-import signal
+from pathlib import Path
+from utilities.utilities import api_call, call_with_timeout, get_python, TimeoutError
+from utilities.checker import test_problem
+from utilities.results import ProblemResult
 
 # =====================
-# Timeout helper
-# =====================
-class TimeoutError(Exception):
-    pass
-
-def timeout_handler(signum, frame):
-    raise TimeoutError("Execution timed out")
-
-# Register the handler once
-signal.signal(signal.SIGALRM, timeout_handler)
-
-# =====================
-# Results initialization
+# Initialize result file
 # =====================
 def init_results(reset=False):
-    files = {
-        "easy": "./results/results_easy_test.json",
-        "medium": "./results/results_medium_test.json",
-        "hard": "./results/results_hard_test.json"
-    }
-    if reset:
-        for f in files.values():
-            with open(f, "w") as out:
-                json.dump([], out)
-    else:
-        for f in files.values():
-            if not os.path.exists(f):
-                with open(f, "w") as out:
-                    json.dump([], out)
-    return files
+    file_path = "./results/results_kattis.json"
+    if reset or not os.path.exists(file_path):
+        with open(file_path, "w") as out:
+            json.dump([], out)
+    return file_path
 
 
 # =====================
-# 1. Prompt dimensions
+# Base instructions
 # =====================
+base_instructions = (
+    "You are a Python programming expert who writes clean, efficient code for competitive-programming style problems.\n"
+    "When given a problem statement and test cases, produce a single Python script that:\n"
+    "1. Uses only the Python standard library (no external imports).\n"
+    "2. Reads input silently from stdin using input() without any prompts or additional text.\n"
+    "3. Chooses descriptive, non-conflicting variable and function names.\n"
+    "4. Correctly handles edge cases (empty inputs, minimum/maximum values, etc.).\n"
+    "5. Does not hard-code any test-specific values (your solution must generalize).\n"
+    "6. Make sure to print the result and nothing else besides the result!\n"
+)
+
+# =====================
+# Prompt variant components
+# =====================
+
 problem_framing = {
-    "Natural language": "Write a Python function named {func_name} that {description}",
-    "Docstring + signature": "\"\"\"{description}\"\"\"\ndef {func_name}({signature}):",
-    "Test-driven": "Write Python code that passes these tests:\n{tests}"
+    "Natural language": "{description}",
+    #"Test-driven": "Write Python code that passes these tests:\n{tests}"
 }
+
 
 reasoning_scaffolds = {
     "Direct": "{problem}",
-    "Step-by-step": "Reason step by step, then provide code:\n{problem}",
-    "Self-checking": "Explain your approach, then provide final code:\n{problem}"
+    "Chain-of-Thought": "Reason step by step, then provide code:\n{problem}",
+    "Program-Aided": "First generate pseudo-code or comments as intermediate reasoning steps, then the full code:\n{problem}"
 }
 
-verbosity = {
-    "Minimal": "{problem}",
-    "Medium": "{problem}\nFunction signature: def {func_name}({signature})",
-    "Verbose": "Problem:\n{problem}\nConstraints:\n{constraints}\nExamples:\n{examples}\nFunction name: {func_name}"
+decomposition = {
+    "None": "{problem}",
+    "Basic": (
+        "Break down the problem into simpler sub-tasks:\n"
+        "1. Understand inputs and outputs.\n"
+        "2. Handle edge cases.\n"
+        "3. Implement core logic.\n"
+        "Then solve each sub-task in code:\n{problem}"
+    )
 }
 
 output_control = {
     "Code only": (
-        "Return only code, no explanation. "
-        "Put all code inside fenced code blocks like this:\n```python\n# code here\n```"
+        "Return only code inside fenced Python code blocks like this:\n```python\n# code here\n```"
     ),
-    "Code + explanation": (
-        "Provide code inside a fenced Python code block, then explain briefly outside the block. "
-        "Example:\n```python\n# code\n```\nExplanation here."
-    ),
-    "Code + tests + explanation": (
-        "Provide code and tests inside fenced Python code blocks, then explain briefly outside the block. "
-        "Always format code like:\n```python\n# code\n```"
+    "Explanation + Code": (
+        "Provide an explanation for your solution, then provide code inside a fenced Python code block."
     )
 }
 
 
 # =====================
-# 2. Problems
+# Prompt generator
 # =====================
-problems = [
-    {
-        "name": "Easy – Two Sum",
-        "func_name": "two_sum",
-        "description": "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.",
-        "signature": "nums: list[int], target: int -> list[int]",
-        "constraints": "Each input has exactly one solution. Do not use the same element twice.",
-        "examples": "Input: nums = [2,7,11,15], target = 9 → Output: [0,1]",
-        "tests": "assert two_sum([2,7,11,15], 9) == [0,1]"
-    },
-    {
-        "name": "Medium – Product of Array Except Self",
-        "func_name": "product_except_self",
-        "description": "Given an array nums of length n, return an array output such that output[i] is equal to the product of all elements of nums except nums[i].",
-        "signature": "nums: list[int] -> list[int]",
-        "constraints": "Do not use division. Solve in O(n) time complexity and O(1) extra space (output array does not count).",
-        "examples": "Input: [1,2,3,4] → Output: [24,12,8,6]\nInput: [-1,1,0,-3,3] → Output: [0,0,9,0,0]",
-        "tests": """
-assert product_except_self([1,2,3,4]) == [24,12,8,6]
-assert product_except_self([-1,1,0,-3,3]) == [0,0,9,0,0]
-"""
-    },
-    {
-        "name": "Hard – Median of Two Sorted Arrays",
-        "func_name": "find_median_sorted_arrays",
-        "description": "Given two sorted arrays nums1 and nums2 of size m and n respectively, return the median of the two sorted arrays.",
-        "signature": "nums1: list[int], nums2: list[int] -> float",
-        "constraints": "The overall run time complexity should be O(log (m+n)).",
-        "examples": "Input: nums1 = [1,3], nums2 = [2] → Output: 2.0",
-        "tests": "assert find_median_sorted_arrays([1,3], [2]) == 2.0"
-    }
-]
-
-problems2 = [
-    {
-        "name": "Easy – Find Words Containing Character",
-        "func_name": "find_words_containing",
-        "description": "Given a 0-indexed array of strings words and a character x, return an array of indices representing the words that contain x.",
-        "signature": "words: list[str], x: str -> list[int]",
-        "constraints": "1 <= words.length <= 50; 1 <= words[i].length <= 50; x is a lowercase English letter; words[i] consists only of lowercase English letters.",
-        "examples": 'Input: words = ["leet","code"], x = "e" → Output: [0,1]',
-        "tests": """
-assert find_words_containing(["leet","code"], "e") == [0,1]
-assert find_words_containing(["abc","bcd","aaaa","cbc"], "a") == [0,2]
-assert find_words_containing(["abc","bcd","aaaa","cbc"], "z") == []
-"""
-    },
-    {
-        "name": "Medium – Coin Change",
-        "func_name": "coin_change",
-        "description": "You are given an integer array coins representing coins of different denominations and an integer amount representing a total amount of money. Return the fewest number of coins that you need to make up that amount. If that amount of money cannot be made up by any combination of the coins, return -1.",
-        "signature": "coins: list[int], amount: int -> int",
-        "constraints": "1 <= coins.length <= 12; 1 <= coins[i] <= 2^31 - 1; 0 <= amount <= 10^4",
-        "examples": "Input: coins = [1,2,5], amount = 11 → Output: 3\nInput: coins = [2], amount = 3 → Output: -1\nInput: coins = [1], amount = 0 → Output: 0",
-        "tests": """
-assert coin_change([1,2,5], 11) == 3
-assert coin_change([2], 3) == -1
-assert coin_change([1], 0) == 0
-"""
-    },
-    {
-    "name": "Hard – Trapping Rain Water",
-    "func_name": "trap",
-    "description": "Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.",
-    "signature": "height: list[int] -> int",
-    "constraints": "1 <= len(height) <= 2 * 10^4, 0 <= height[i] <= 10^5",
-    "examples": "Input: height = [0,1,0,2,1,0,1,3,2,1,2,1] → Output: 6; Input: height = [4,2,0,3,2,5] → Output: 9",
-    "tests": """
-assert trap([4,2,0,3,2,5]) == 9
-assert trap([1,0,1]) == 1
-assert trap([2,0,2]) == 2
-"""
-}
-
-]
-
-# =====================
-# 3. Code cleaner
-# =====================
-def clean_and_normalize_code(code_str, expected_name):
-    """Clean code: remove non-code text, handle class Solution, rename funcs."""
-    prelude = "from typing import List, Optional\n"
-    code_str = prelude + code_str
-
-    # Defensive: strip out lines that clearly aren't code
-    filtered_lines = []
-    for line in code_str.splitlines():
-        if line.strip().startswith(("def ", "class ", "import ", "from ", "@")):
-            filtered_lines.append(line)
-        elif line.strip().startswith(("return", "if", "for", "while", "try", "except", "with", "#", "")):
-            filtered_lines.append(line)
-        # else drop natural language junk like "Explanation:", "Reason step by step", etc.
-    code_str = "\n".join(filtered_lines)
-
-    try:
-        signal.alarm(3)  # timeout parse
-        tree = ast.parse(code_str)
-    except SyntaxError:
-        # Fallback: regex capture just function bodies
-        import re
-        matches = re.findall(r"(def\s+" + re.escape(expected_name) + r"\s*\(.*?\):[\s\S]+?)(?=\ndef|\Z)", code_str)
-        if matches:
-            return prelude + matches[0]
-        raise
-    finally:
-        signal.alarm(0)
-
-    new_body = []
-    has_solution_class = False
-
-    for node in tree.body:
-        if isinstance(node, (ast.Import, ast.ImportFrom, ast.FunctionDef, ast.ClassDef, ast.Assign)):
-            if isinstance(node, ast.ClassDef) and node.name == "Solution":
-                has_solution_class = True
-                for subnode in node.body:
-                    if isinstance(subnode, ast.FunctionDef):
-                        subnode.name = expected_name
-                        new_body.append(subnode)
-            elif isinstance(node, ast.FunctionDef):
-                if node.name == expected_name:
-                    new_body.append(node)
-
-    tree.body = new_body
-    cleaned_code = unparse(tree)
-
-    if has_solution_class:
-        wrapper = (
-            f"\ndef {expected_name}(*args, **kwargs):\n"
-            f"    return Solution().{expected_name}(*args, **kwargs)\n"
-        )
-        cleaned_code += wrapper
-
-    return cleaned_code
+def load_kattis_problems(path: str) -> dict:
+    with open(path, "r") as f:
+        return json.load(f)
 
 
-# =====================
-# 4. Prompt generator
-# =====================
-def generate_prompts(problem):
-    all_variants = []
-    for (pf_name, pf_template), (rs_name, rs_template), (vb_name, vb_template), (oc_name, oc_template) in product(
-        problem_framing.items(),
-        reasoning_scaffolds.items(),
-        verbosity.items(),
-        output_control.items()
+def generate_prompt_variants(problem_id: str, problem_data: dict):
+    desc = problem_data.get("description", "")
+    tests = problem_data.get("tests", "")
+
+    variants = []
+    for framing_key, reasoning_key, decomp_key, output_key in product(
+        problem_framing.keys(),
+        reasoning_scaffolds.keys(),
+        decomposition.keys(),
+        output_control.keys()
     ):
-        base_problem = pf_template.format(
-            description=problem["description"],
-            signature=problem["signature"],
-            tests=problem["tests"],
-            func_name=problem["func_name"]
-        )
-        scaffolded = rs_template.format(problem=base_problem)
-        verbose = vb_template.format(
-            problem=scaffolded,
-            signature=problem["signature"],
-            constraints=problem["constraints"],
-            examples=problem["examples"],
-            func_name=problem["func_name"]
-        )
-        final_prompt = f"{verbose}\n\n{oc_template}"
+        framing = problem_framing[framing_key].format(description=desc, tests=tests)
+        decomp_problem = decomposition[decomp_key].format(problem=framing)
+        reason_problem = reasoning_scaffolds[reasoning_key].format(problem=decomp_problem)
+        full_prompt = base_instructions + "\nBelow is the full problem. Write only as instructed.\n\n" + reason_problem + "\n" + output_control[output_key]
 
-        all_variants.append({
-            "framing": pf_name,
-            "scaffold": rs_name,
-            "verbosity": vb_name,
-            "output": oc_name,
-            "prompt": final_prompt
+        variants.append({
+            "framing": framing_key,
+            "reasoning": reasoning_key,
+            "decomposition": decomp_key,
+            "output_control": output_key,
+            "prompt": full_prompt
         })
-    return all_variants
+
+    return variants
+
 
 # =====================
-# 5. Run experiment
+# Experiment runner
 # =====================
-def run_experiment(difficulties=None, reset=False):
-    model = "qwen2.5-coder:0.5b"
-    #model = "starcoder:1b"
-    files = init_results(reset=reset)
+def run_experiment(model="qwen2.5-coder:0.5b", reset=False):
+    results_file = init_results(reset=reset)
 
-    for problem in problems:
-        difficulty = problem["name"].split("–")[0].strip().lower()
+    kattis_path = Path("./datasets/kattis_problems.json")
+    if not kattis_path.exists():
+        raise FileNotFoundError("kattis_problems.json not found in workspace")
 
-        if difficulties and difficulty not in difficulties:
+    kattis = load_kattis_problems(str(kattis_path))
+
+    for problem_id, pdata in kattis.items():
+        if problem_id not in ["twostones"]:  # Example filter
             continue
 
-        print(f"\n=== Running {problem['name']} ===")
-        variants = generate_prompts(problem)
+        print(f"\n=== Running {problem_id} ===")
 
-        for i, variant in enumerate(variants):
-            print(f"\n--- Variant {i+1}/{len(variants)} ---")
-            print(f"Framing: {variant['framing']}, Scaffold: {variant['scaffold']}, "
-                  f"Verbosity: {variant['verbosity']}, Output: {variant['output']}")
+        prompt_variants = generate_prompt_variants(problem_id, pdata)
+
+        for variant in prompt_variants:
+            variant_name = f"{variant['framing']}-{variant['reasoning']}-{variant['decomposition']}-{variant['output_control']}"
+            print(f"\n--- Variant: {variant_name} ---")
 
             result = {
                 "timestamp": datetime.now().isoformat(),
-                "problem": problem["name"],
-                "framing": variant["framing"],
-                "scaffold": variant["scaffold"],
-                "verbosity": variant["verbosity"],
-                "output": variant["output"],
+                "problem": problem_id,
+                "prompt_variant": {
+                    "framing": variant["framing"],
+                    "reasoning": variant["reasoning"],
+                    "decomposition": variant["decomposition"],
+                    "output_control": variant["output_control"]
+                },
+                "prompt": variant["prompt"],
                 "passed": False,
                 "error": "",
                 "raw_code": "",
-                "code": "",
-                "test_results": []
+                "test_summary": {},
             }
 
             try:
-                # Protect external API calls with a process-level timeout so the whole
-                # experiment doesn't hang if the model/client blocks.
-                from utilities import call_with_timeout
-                try:
-                    response = call_with_timeout(api_call, args=(variant["prompt"], model), timeout=30)
-                except TimeoutError:
-                    raise TimeoutError("API call timed out")
+                response = call_with_timeout(api_call, args=(variant["prompt"], model), timeout=60)
                 raw_code = get_python(response)
                 result["raw_code"] = raw_code
 
-                expected_name = problem["func_name"]
-                try:
-                    code = clean_and_normalize_code(raw_code, expected_name)
-                    result["code"] = code
-                except Exception as e:
-                    result["error"] = f"Cleaning error: {e}"
-                    print(f"Cleaning error: {e}")
-                    continue  # skip bad variant
+                tmp_path = "./temp_solution.py"
+                with open(tmp_path, "w") as f:
+                    f.write(raw_code)
 
-                local_ns = {
-                    "List": List,
-                    "Optional": Optional
+                prob_result: ProblemResult = test_problem(problem_id=problem_id, solution_path=tmp_path)
+
+                passed = prob_result.passed_count == prob_result.total_count
+                result["passed"] = passed
+                result["test_summary"] = {
+                    "passed": prob_result.passed_count,
+                    "total": prob_result.total_count
                 }
 
-                try:
-                    signal.alarm(5)  # timeout for exec + tests
-                    exec(code, local_ns, local_ns)
+                prob_result.print_cases()
+                print("✅ All tests passed" if passed else "❌ Some tests failed")
 
-                    tree = ast.parse(problem["tests"])
-                    all_passed = True
-                    for node in tree.body:
-                        if isinstance(node, ast.Assert):
-                            actual_val = eval(compile(ast.Expression(node.test.left), "<ast>", "eval"), local_ns)
-                            expected_val = eval(compile(ast.Expression(node.test.comparators[0]), "<ast>", "eval"), local_ns)
-                            passed = (actual_val == expected_val)
-                            if not passed:
-                                all_passed = False
-                            result["test_results"].append({
-                                "test": ast.unparse(node.test),
-                                "actual": actual_val,
-                                "expected": expected_val,
-                                "passed": passed
-                            })
-
-                    result["passed"] = all_passed
-                    print("✅ Passed all tests" if all_passed else "❌ Some tests failed")
-                except TimeoutError:
-                    result["error"] = "Execution timed out"
-                    print("⏱️ Execution timed out")
-                except Exception as e:
-                    result["error"] = str(e)
-                    print("❌ Failed:", e)
-                finally:
-                    signal.alarm(0)
-
+            except TimeoutError:
+                result["error"] = "API call or execution timed out"
+                print("⏱️ Timeout occurred")
             except Exception as e:
-                print(f"Error during API call: {e}")
-                result["error"] = f"API error: {e}"
+                result["error"] = str(e)
+                print(f"❌ Error: {e}")
 
-            json_file = files[difficulty]
-            with open(json_file, "r+") as f:
+            with open(results_file, "r+") as f:
                 data = json.load(f)
                 data.append(result)
                 f.seek(0)
@@ -358,4 +180,4 @@ def run_experiment(difficulties=None, reset=False):
 
 
 if __name__ == "__main__":
-    run_experiment(difficulties=["easy"], reset=False)
+    run_experiment(reset=False)

@@ -1,0 +1,98 @@
+[
+  {
+    "timestamp": "2025-10-05T09:57:31.511890",
+    "problem": "twostones",
+    "prompt_variant": {
+      "framing": "Natural language",
+      "reasoning": "Direct",
+      "decomposition": "None",
+      "output_control": "Code only"
+    },
+    "prompt": "You are a Python programming expert who writes clean, efficient code for competitive-programming style problems.\nWhen given a problem statement and test cases, produce a single Python script that:\n1. Uses only the Python standard library (no external imports).\n2. Reads input silently from stdin using input() without any prompts or additional text.\n3. Chooses descriptive, non-conflicting variable and function names.\n4. Correctly handles edge cases (empty inputs, minimum/maximum values, etc.).\n5. Does not hard-code any test-specific values (your solution must generalize).\n6. Make sure to print the result and nothing else besides the result!\n\nBelow is the full problem. Write only as instructed.\n\nAlice and Bob are playing a new game of stones. There are $N$ stones placed on the ground, forming a sequence. The stones are labeled from $1$ to $N$. Alice and Bob in turns take exactly two consecutive stones on the ground until there are no consecutive stones on the ground. That is, each player can take stone $i$ and stone $i+1$, where $1 \\leq i \\leq N - 1$. If the number of stone left is odd, Alice wins. Otherwise, Bob wins. Assume both Alice and Bob play optimally and Alice plays   Input The input contains an integer $N$ $(1 \\leq N \\leq 10\\, 000\\, 000)$, the number of stones. Output Output the winner, \u201cAlice\u201d or \u201cBob\u201d (without the quotes), on a line.\nReturn only code inside fenced Python code blocks like this:\n```python\n# code here\n```",
+    "passed": false,
+    "error": "[Errno 2] No such file or directory: '../datasets/parsed_tests.json'",
+    "raw_code": "N = int(input()) # Read input for N\nif N % 2 == 0: # Check if N is even\n    print(\"Alice\") # Alice wins if N is even\nelse: # If N is odd\n    print(\"Bob\") # Bob wins if N is odd",
+    "test_summary": {}
+  },
+  {
+    "timestamp": "2025-10-05T09:57:33.767478",
+    "problem": "twostones",
+    "prompt_variant": {
+      "framing": "Natural language",
+      "reasoning": "Direct",
+      "decomposition": "None",
+      "output_control": "Explanation + Code"
+    },
+    "prompt": "You are a Python programming expert who writes clean, efficient code for competitive-programming style problems.\nWhen given a problem statement and test cases, produce a single Python script that:\n1. Uses only the Python standard library (no external imports).\n2. Reads input silently from stdin using input() without any prompts or additional text.\n3. Chooses descriptive, non-conflicting variable and function names.\n4. Correctly handles edge cases (empty inputs, minimum/maximum values, etc.).\n5. Does not hard-code any test-specific values (your solution must generalize).\n6. Make sure to print the result and nothing else besides the result!\n\nBelow is the full problem. Write only as instructed.\n\nAlice and Bob are playing a new game of stones. There are $N$ stones placed on the ground, forming a sequence. The stones are labeled from $1$ to $N$. Alice and Bob in turns take exactly two consecutive stones on the ground until there are no consecutive stones on the ground. That is, each player can take stone $i$ and stone $i+1$, where $1 \\leq i \\leq N - 1$. If the number of stone left is odd, Alice wins. Otherwise, Bob wins. Assume both Alice and Bob play optimally and Alice plays   Input The input contains an integer $N$ $(1 \\leq N \\leq 10\\, 000\\, 000)$, the number of stones. Output Output the winner, \u201cAlice\u201d or \u201cBob\u201d (without the quotes), on a line.\nProvide an explanation for your solution, then provide code inside a fenced Python code block.",
+    "passed": false,
+    "error": "[Errno 2] No such file or directory: '../datasets/parsed_tests.json'",
+    "raw_code": "def get_winner(N):\n    # Initialize variables to track the current player's turn and the count of stones left\n    current_player = \"Alice\"\n    stones_left = N\n    \n    while stones_left > 0:\n        if stones_left % 2 == 1:  # Check if there are an odd number of stones left\n            return current_player  # Return the current player as the winner\n        \n        # If the count of stones is even, take the next two consecutive stones\n        else:\n            # Calculate the indices of the two consecutive stones to take\n            i = current_player * 2 - 1\n            j = current_player * 2\n            \n            # Check if Alice can take the stone at index i\n            if stones_left >= i + 1:\n                stones_left -= i + 1\n                \n            # Check if Bob can take the stone at index j\n            elif stones_left >= j + 1:\n                stones_left -= j + 1\n                \n            # Alternate between taking consecutive stones\n            current_player = \"Bob\" if current_player == \"Alice\" else \"Alice\"\n    \n    # If the loop ends and no winner is found, the game ends in a tie\n    return \"Tie\"\n\n# Read input from standard input\nN = int(input())\n\n# Get the winner of the game\nwinner = get_winner(N)\n\n# Print the result\nprint(winner)",
+    "test_summary": {}
+  },
+  {
+    "timestamp": "2025-10-05T09:57:42.218833",
+    "problem": "twostones",
+    "prompt_variant": {
+      "framing": "Natural language",
+      "reasoning": "Direct",
+      "decomposition": "Basic",
+      "output_control": "Code only"
+    },
+    "prompt": "You are a Python programming expert who writes clean, efficient code for competitive-programming style problems.\nWhen given a problem statement and test cases, produce a single Python script that:\n1. Uses only the Python standard library (no external imports).\n2. Reads input silently from stdin using input() without any prompts or additional text.\n3. Chooses descriptive, non-conflicting variable and function names.\n4. Correctly handles edge cases (empty inputs, minimum/maximum values, etc.).\n5. Does not hard-code any test-specific values (your solution must generalize).\n6. Make sure to print the result and nothing else besides the result!\n\nBelow is the full problem. Write only as instructed.\n\nBreak down the problem into simpler sub-tasks:\n1. Understand inputs and outputs.\n2. Handle edge cases.\n3. Implement core logic.\nThen solve each sub-task in code:\nAlice and Bob are playing a new game of stones. There are $N$ stones placed on the ground, forming a sequence. The stones are labeled from $1$ to $N$. Alice and Bob in turns take exactly two consecutive stones on the ground until there are no consecutive stones on the ground. That is, each player can take stone $i$ and stone $i+1$, where $1 \\leq i \\leq N - 1$. If the number of stone left is odd, Alice wins. Otherwise, Bob wins. Assume both Alice and Bob play optimally and Alice plays   Input The input contains an integer $N$ $(1 \\leq N \\leq 10\\, 000\\, 000)$, the number of stones. Output Output the winner, \u201cAlice\u201d or \u201cBob\u201d (without the quotes), on a line.\nReturn only code inside fenced Python code blocks like this:\n```python\n# code here\n```",
+    "passed": false,
+    "error": "[Errno 2] No such file or directory: '../datasets/parsed_tests.json'",
+    "raw_code": "import sys\n\ndef determine_winner():\n    try:\n        # Read the number of stones from input\n        N = int(input())\n        \n        if N <= 1:\n            return \"Alice\"\n        elif (N - 1) % 2 == 0:\n            return \"Bob\"\n        else:\n            return \"Draw\"\n    except ValueError:\n        print(\"Invalid input. Please enter a valid integer.\")\n        sys.exit(1)\n\n# Call the function and print the result\nwinner = determine_winner()\nprint(winner)",
+    "test_summary": {}
+  },
+  {
+    "timestamp": "2025-10-05T09:57:45.387774",
+    "problem": "twostones",
+    "prompt_variant": {
+      "framing": "Natural language",
+      "reasoning": "Direct",
+      "decomposition": "Basic",
+      "output_control": "Explanation + Code"
+    },
+    "prompt": "You are a Python programming expert who writes clean, efficient code for competitive-programming style problems.\nWhen given a problem statement and test cases, produce a single Python script that:\n1. Uses only the Python standard library (no external imports).\n2. Reads input silently from stdin using input() without any prompts or additional text.\n3. Chooses descriptive, non-conflicting variable and function names.\n4. Correctly handles edge cases (empty inputs, minimum/maximum values, etc.).\n5. Does not hard-code any test-specific values (your solution must generalize).\n6. Make sure to print the result and nothing else besides the result!\n\nBelow is the full problem. Write only as instructed.\n\nBreak down the problem into simpler sub-tasks:\n1. Understand inputs and outputs.\n2. Handle edge cases.\n3. Implement core logic.\nThen solve each sub-task in code:\nAlice and Bob are playing a new game of stones. There are $N$ stones placed on the ground, forming a sequence. The stones are labeled from $1$ to $N$. Alice and Bob in turns take exactly two consecutive stones on the ground until there are no consecutive stones on the ground. That is, each player can take stone $i$ and stone $i+1$, where $1 \\leq i \\leq N - 1$. If the number of stone left is odd, Alice wins. Otherwise, Bob wins. Assume both Alice and Bob play optimally and Alice plays   Input The input contains an integer $N$ $(1 \\leq N \\leq 10\\, 000\\, 000)$, the number of stones. Output Output the winner, \u201cAlice\u201d or \u201cBob\u201d (without the quotes), on a line.\nProvide an explanation for your solution, then provide code inside a fenced Python code block.",
+    "passed": false,
+    "error": "[Errno 2] No such file or directory: '../datasets/parsed_tests.json'",
+    "raw_code": "import sys\n\ndef count_stones(N):\n    return N * (N + 1) // 2\n\ndef determine_winner(N):\n    # Alice wins if the number of stones left is odd\n    return \"Alice\" if count_stones(N) % 2 else \"Bob\"\n\n# Read input from stdin\ntry:\n    N = int(input())\nexcept ValueError:\n    print(\"Please enter a valid integer between 1 and 10,000,000.\")\n    sys.exit(1)\n\n# Determine winner\nwinner = determine_winner(N)\nprint(winner)",
+    "test_summary": {}
+  },
+  {
+    "timestamp": "2025-10-05T09:58:48.127916",
+    "problem": "twostones",
+    "prompt_variant": {
+      "framing": "Natural language",
+      "reasoning": "Direct",
+      "decomposition": "None",
+      "output_control": "Code only"
+    },
+    "prompt": "You are a Python programming expert who writes clean, efficient code for competitive-programming style problems.\nWhen given a problem statement and test cases, produce a single Python script that:\n1. Uses only the Python standard library (no external imports).\n2. Reads input silently from stdin using input() without any prompts or additional text.\n3. Chooses descriptive, non-conflicting variable and function names.\n4. Correctly handles edge cases (empty inputs, minimum/maximum values, etc.).\n5. Does not hard-code any test-specific values (your solution must generalize).\n6. Make sure to print the result and nothing else besides the result!\n\nBelow is the full problem. Write only as instructed.\n\nAlice and Bob are playing a new game of stones. There are $N$ stones placed on the ground, forming a sequence. The stones are labeled from $1$ to $N$. Alice and Bob in turns take exactly two consecutive stones on the ground until there are no consecutive stones on the ground. That is, each player can take stone $i$ and stone $i+1$, where $1 \\leq i \\leq N - 1$. If the number of stone left is odd, Alice wins. Otherwise, Bob wins. Assume both Alice and Bob play optimally and Alice plays   Input The input contains an integer $N$ $(1 \\leq N \\leq 10\\, 000\\, 000)$, the number of stones. Output Output the winner, \u201cAlice\u201d or \u201cBob\u201d (without the quotes), on a line.\nReturn only code inside fenced Python code blocks like this:\n```python\n# code here\n```",
+    "passed": false,
+    "error": "",
+    "raw_code": "def stone_game(N):\n    # Initialize variables for Alice's and Bob's scores\n    alice_score = 0\n    bob_score = 0\n    \n    # Read input from stdin without any prompts or additional text\n    while N > 0:\n        # Take two consecutive stones\n        alice_stone = int(input())\n        bob_stone = int(input())\n        \n        # Update scores\n        if alice_stone + bob_stone % 2 == 0:\n            alice_score += alice_stone\n        else:\n            bob_score += bob_stone\n        \n        # Decrease the number of stones left\n        N -= 2\n    \n    # Determine the winner\n    if alice_score > bob_score:\n        return \"Alice\"\n    else:\n        return \"Bob\"\n\n# Example usage\nN = int(input())\nresult = stone_game(N)\nprint(result)",
+    "test_summary": {
+      "passed": 0,
+      "total": 3
+    }
+  },
+  {
+    "timestamp": "2025-10-05T09:58:52.656935",
+    "problem": "twostones",
+    "prompt_variant": {
+      "framing": "Natural language",
+      "reasoning": "Direct",
+      "decomposition": "None",
+      "output_control": "Explanation + Code"
+    },
+    "prompt": "You are a Python programming expert who writes clean, efficient code for competitive-programming style problems.\nWhen given a problem statement and test cases, produce a single Python script that:\n1. Uses only the Python standard library (no external imports).\n2. Reads input silently from stdin using input() without any prompts or additional text.\n3. Chooses descriptive, non-conflicting variable and function names.\n4. Correctly handles edge cases (empty inputs, minimum/maximum values, etc.).\n5. Does not hard-code any test-specific values (your solution must generalize).\n6. Make sure to print the result and nothing else besides the result!\n\nBelow is the full problem. Write only as instructed.\n\nAlice and Bob are playing a new game of stones. There are $N$ stones placed on the ground, forming a sequence. The stones are labeled from $1$ to $N$. Alice and Bob in turns take exactly two consecutive stones on the ground until there are no consecutive stones on the ground. That is, each player can take stone $i$ and stone $i+1$, where $1 \\leq i \\leq N - 1$. If the number of stone left is odd, Alice wins. Otherwise, Bob wins. Assume both Alice and Bob play optimally and Alice plays   Input The input contains an integer $N$ $(1 \\leq N \\leq 10\\, 000\\, 000)$, the number of stones. Output Output the winner, \u201cAlice\u201d or \u201cBob\u201d (without the quotes), on a line.\nProvide an explanation for your solution, then provide code inside a fenced Python code block.",
+    "passed": false,
+    "error": "",
+    "raw_code": "def game_of_stones(N):\n    \"\"\"\n    Alice and Bob play optimally to form a sequence of N stones where each player can take exactly two consecutive stones,\n    until there are no consecutive stones left. The first player wins if the number of stone left is odd, otherwise Bob wins.\n    \n    Args:\n    N (int): The number of stones on the ground.\n    \n    Returns:\n    str: \"Alice\" or \"Bob\".\n    \"\"\"\n    # Initialize variables\n    current = 1\n    result = None\n    \n    # Check if there are any stones left to play\n    while current < N:\n        # If there's only one stone left, Alice wins\n        if current == N - 1:\n            return \"Alice\"\n        \n        # Take the next two consecutive stones\n        current += 2\n        \n        # Check if the number of stones is odd\n        if current % 2 != 0:\n            result = \"Bob\"\n    \n    return result\n\n# Read input from stdin\nN = int(input())\n# Call the game_of_stones function with N and print the result\nprint(game_of_stones(N))",
+    "test_summary": {
+      "passed": 0,
+      "total": 3
+    }
+  }
+]

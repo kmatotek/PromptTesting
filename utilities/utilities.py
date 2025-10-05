@@ -1,7 +1,8 @@
 import ollama
 import re
-import multiprocessing
+import multiprocessing as mp
 import traceback
+from typing import Any, Callable
 
 # ---------------------
 # Ollama API helpers
@@ -12,7 +13,7 @@ def api_call(input_text, model, client=None):
     Call Ollama with the given input_text.
     """
     prompt = input_text
-    print(prompt)
+    #print(prompt)
     if client:
         response = client.chat(
             model=model, 
@@ -24,54 +25,53 @@ def api_call(input_text, model, client=None):
             model=model,
             messages=[{"role": "user", "content": prompt}]
         )
-    
-
     return response["message"]["content"]
 
 
-def _call_target(func, q, args, kwargs):
-    """Target wrapper for running a function in a separate process.
+class TimeoutError(Exception):
+    """Raised when a call times out."""
+    pass
 
-    Puts a tuple (True, result) on the queue on success, or (False, exc_str) on failure.
-    """
+
+def _worker(func: Callable, args: tuple, kwargs: dict, out_q: mp.Queue):
+    """Worker executed in a child process to run func and return its result or exception."""
     try:
         res = func(*args, **(kwargs or {}))
-        q.put((True, res))
-    except Exception:
-        q.put((False, traceback.format_exc()))
+        out_q.put((True, res))
+    except Exception as e:
+        # Send traceback string to parent for better debugging
+        tb = traceback.format_exc()
+        out_q.put((False, (e, tb)))
 
 
-def call_with_timeout(func, args=(), kwargs=None, timeout: int = 30):
-    """Call `func(*args, **kwargs)` but kill it if it doesn't complete within `timeout` seconds.
+def call_with_timeout(func: Callable, args: tuple = (), kwargs: dict = None, timeout: float = 30) -> Any:
+    """Run func(*args, **kwargs) in a separate process and return its result.
 
-    Uses multiprocessing to ensure the child can be terminated if it blocks in C code.
-    Returns the function's return value on success. Raises TimeoutError on timeout and
-    re-raises exceptions from the child process as RuntimeError with the child's traceback.
+    If the function doesn't return within `timeout` seconds, terminate the process and raise TimeoutError.
+    Any exception raised inside the function is re-raised in the parent with original traceback attached.
     """
-    if kwargs is None:
-        kwargs = {}
-
-    q = multiprocessing.Queue()
-    p = multiprocessing.Process(target=_call_target, args=(func, q, args, kwargs))
+    ctx = mp.get_context("fork") if hasattr(mp, "get_context") else mp
+    q: mp.Queue = ctx.Queue()
+    p = ctx.Process(target=_worker, args=(func, args, kwargs or {}, q))
     p.start()
-    p.join(timeout)
-    if p.is_alive():
-        try:
+    try:
+        success, payload = q.get(timeout=timeout)
+    except Exception:
+        # Timeout or queue empty; ensure process is terminated
+        if p.is_alive():
             p.terminate()
-        except Exception:
-            pass
-        p.join()
-        raise TimeoutError("Function call timed out")
+            p.join(timeout=1)
+        raise TimeoutError(f"Function call timed out after {timeout} seconds")
+    finally:
+        if p.is_alive():
+            p.join(timeout=1)
 
-    if q.empty():
-        raise RuntimeError("Child process exited without returning a result")
-
-    ok, payload = q.get()
-    if ok:
+    if success:
         return payload
     else:
-        # payload is a traceback string from child
-        raise RuntimeError(f"Child process raised an exception:\n{payload}")
+        exc, tb = payload
+        # Raise the original exception but attach remote traceback for debugging
+        raise Exception(f"Child process exception: {exc}\nRemote traceback:\n{tb}")
 
 
 import re
