@@ -122,7 +122,7 @@ def run_experiment(model="qwen2.5-coder:0.5b", reset=False):
         if difficulty_elo is None or difficulty_elo > 2:
             continue
 
-        print(f"\n=== Running {problem_id} ===")
+        print(f"\n=== Running {problem_id} (difficulty={difficulty_elo}) ===")
 
         prompt_variants = generate_prompt_variants(problem_id, pdata)
 
@@ -133,6 +133,8 @@ def run_experiment(model="qwen2.5-coder:0.5b", reset=False):
             result = {
                 "timestamp": datetime.now().isoformat(),
                 "problem": problem_id,
+                # 👇 Add difficulty field here
+                "difficulty": difficulty_elo,
                 "prompt_variant": {
                     "framing": variant["framing"],
                     "reasoning": variant["reasoning"],
@@ -179,6 +181,7 @@ def run_experiment(model="qwen2.5-coder:0.5b", reset=False):
                 data.append(result)
                 f.seek(0)
                 json.dump(data, f, indent=2)
+
 
 
 if __name__ == "__main__":
