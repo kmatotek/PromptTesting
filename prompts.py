@@ -117,7 +117,9 @@ def run_experiment(model="qwen2.5-coder:0.5b", reset=False):
     kattis = load_kattis_problems(str(kattis_path))
 
     for problem_id, pdata in kattis.items():
-        if problem_id not in ["twostones"]:  # Example filter
+
+        difficulty_elo = pdata.get("difficulty_elo", None)
+        if difficulty_elo is None or difficulty_elo > 2:
             continue
 
         print(f"\n=== Running {problem_id} ===")
